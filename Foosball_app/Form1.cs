@@ -25,5 +25,10 @@ namespace Foosball_app
         {
 
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // do things
+        }
     }
 }
