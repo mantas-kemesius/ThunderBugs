@@ -63,6 +63,9 @@
     <Reference Include="Emgu.CV">
       <HintPath>.\Emgu.CV.dll</HintPath>
     </Reference>
+    <Reference Include="Emgu.CV.DebuggerVisualizers.VS2017">
+      <HintPath>..\..\..\..\..\..\..\Emgu\emgucv-windesktop 3.2.0.2682\bin\Emgu.CV.DebuggerVisualizers.VS2017.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.CV.UI">
       <HintPath>.\Emgu.CV.UI.dll</HintPath>
     </Reference>

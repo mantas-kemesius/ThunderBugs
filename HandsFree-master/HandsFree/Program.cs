@@ -13,18 +13,18 @@ namespace HandsFree {
         static void Main(string[] args) {
             FileVersionInfo myFileVersionInfo = null;
             bool airNotInstalled = false;
-            if (File.Exists("C:\\Program Files (x86)\\Common Files\\Adobe AIR\\Versions\\1.0\\Adobe AIR.dll"))
+           // if (File.Exists("C:\\Program Files (x86)\\Common Files\\Adobe AIR\\Versions\\1.0\\Adobe AIR.dll"))
                 myFileVersionInfo = FileVersionInfo.GetVersionInfo(@"C:\\Program Files (x86)\\Common Files\\Adobe AIR\\Versions\\1.0\\Adobe AIR.dll");
-            else if (File.Exists("C:\\Program Files\\Common Files\\Adobe AIR\\Versions\\1.0\\Adobe AIR.dll"))
-                myFileVersionInfo = FileVersionInfo.GetVersionInfo(@"C:\\Program Files\\Common Files\\Adobe AIR\\Versions\\1.0\\Adobe AIR.dll");
-            else
-                airNotInstalled = true;
+            //else if (File.Exists("C:\\Program Files\\Common Files\\Adobe AIR\\Versions\\1.0\\Adobe AIR.dll"))
+              //  myFileVersionInfo = FileVersionInfo.GetVersionInfo(@"C:\\Program Files\\Common Files\\Adobe AIR\\Versions\\1.0\\Adobe AIR.dll");
+            //else
+               // airNotInstalled = true;
 
-            if (airNotInstalled || int.Parse(myFileVersionInfo.FileVersion.Replace(".", "")) < 3901030) {
-                MessageBox.Show("Please install the latest Adobe Air");
-                Process.Start("http://get.adobe.com/air/");
-                Environment.Exit(0);
-            }
+            //if (airNotInstalled || int.Parse(myFileVersionInfo.FileVersion.Replace(".", "")) < 3901030) {
+             //   MessageBox.Show("Please install the latest Adobe Air");
+              //  Process.Start("http://get.adobe.com/air/");
+               // Environment.Exit(0);
+           // }
 
             Main main = new Main(false);
 
