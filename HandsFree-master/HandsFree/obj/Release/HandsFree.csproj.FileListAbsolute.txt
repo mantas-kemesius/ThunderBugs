@@ -1,0 +1,15 @@
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\bin\Release\HandsFree.exe.config
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\bin\Release\HandsFree.exe
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\bin\Release\HandsFree.pdb
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\bin\Release\Emgu.CV.dll
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\bin\Release\Emgu.CV.UI.dll
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\bin\Release\Emgu.Util.dll
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\obj\Release\HandsFree.csprojResolveAssemblyReference.cache
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\obj\Release\HandsFree.csproj.CoreCompileInputs.cache
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\obj\Release\HandsFree.exe
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\obj\Release\HandsFree.pdb
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\bin\Release\Emgu.CV.DebuggerVisualizers.VS2017.dll
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\bin\Release\Microsoft.VisualStudio.DebuggerVisualizers.dll
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\bin\Release\Emgu.CV.World.dll
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\bin\Release\ZedGraph.dll
+C:\Users\diana\Desktop\Git\ThunderBugs\HandsFree-master\HandsFree\bin\Release\Emgu.CV.World.xml
