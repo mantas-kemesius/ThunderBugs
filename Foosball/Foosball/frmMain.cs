@@ -12,6 +12,7 @@ using Emgu.CV;                  //
 using Emgu.CV.CvEnum;           // usual Emgu CV imports
 using Emgu.CV.Structure;        //
 using Emgu.CV.UI;               //
+using System.IO;
 
 namespace Foosball
 {
@@ -86,23 +87,83 @@ namespace Foosball
             CvInvoke.Dilate(imgThresh, imgThresh, structuringElement, new Point(-1, -1), 1, BorderType.Default, new MCvScalar(0, 0, 0));
             CvInvoke.Erode(imgThresh, imgThresh, structuringElement, new Point(-1, -1), 1, BorderType.Default, new MCvScalar(0, 0, 0));
 
-            CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 100, 30, 5, 10);
+            CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
             // 4, 100, 50, 10, 400
+
+            var csv = new StringBuilder();
+
+            int[] Array;
+            Array = new int[5000];
+            int cnt = 0;
 
             foreach (CircleF circle in circles)
             {
-                if (txtXYRadius.Text != "")
-                {                         // if we are not on the first line in the text box
-                    txtXYRadius.AppendText(Environment.NewLine);         // then insert a new line char
+                // ifs who check or it's not a player
+                if ((int)circle.Center.X != 95 )
+                {
+                    if ((int)circle.Center.X != 23)
+                    {
+                        if ((int)circle.Center.X != 387)
+                        {
+                            if ((int)circle.Center.X != 385)
+                            {
+                                if ((int)circle.Center.X != 239)
+                                {
+                                    if ((int)circle.Center.X != 267)
+                                    {
+                                        if ((int)circle.Center.X != 93)
+                                        {
+                                            if ((int)circle.Center.X != 503)
+                                            {
+                                                if ((int)circle.Center.X != 97)
+                                                {
+                                                    if ((int)circle.Center.X != 273)
+                                                    {
+                                                        if ((int)circle.Center.X != 237)
+                                                        {
+                                                            if ((int)circle.Center.X != 25)
+                                                            {
+                                                                if ((int)circle.Center.X != 21)
+                                                                {
+
+                                                                    if (txtXYRadius.Text != "")
+                                                                    {                         // if we are not on the first line in the text box
+                                                                        txtXYRadius.AppendText(Environment.NewLine);         // then insert a new line char
+                                                                    }
+
+
+                                                                    txtXYRadius.AppendText("ball position x = " + circle.Center.X.ToString().PadLeft(4) + ", y = " + circle.Center.Y.ToString().PadLeft(4) + ", radius = " + circle.Radius.ToString("###.000").PadLeft(7));
+                                                                    txtXYRadius.ScrollToCaret();             // scroll down in text box so most recent line added (at the bottom) will be shown
+
+                                                                    CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius, new MCvScalar(0, 0, 255), 2);
+                                                                    CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), 3, new MCvScalar(0, 255, 0), -1);
+
+                                                                    //CSV
+                                                                    var first = circle.Center.X.ToString().PadLeft(4);
+                                                                    var second = circle.Center.Y.ToString().PadLeft(4);
+                                                                    //Suggestion made by KyleMit
+                                                                    var newLine = string.Format("{0},{1}", first, second);
+                                                                    csv.AppendLine(newLine);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
-          
-                txtXYRadius.AppendText("ball position x = " + circle.Center.X.ToString().PadLeft(4) + ", y = " + circle.Center.Y.ToString().PadLeft(4) + ", radius = " + circle.Radius.ToString("###.000").PadLeft(7));
-                txtXYRadius.ScrollToCaret();             // scroll down in text box so most recent line added (at the bottom) will be shown
-                
-                CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius, new MCvScalar(0, 0, 255), 2);
-                CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), 3, new MCvScalar(0, 255, 0), -1);
             }
+
+            File.AppendAllText("C:/Users/Mantas/Desktop/Git/ThunderBugs/test.csv", csv.ToString());
+
+
+
             ibOriginal.Image = imgOriginal;
             ibThresh.Image = imgThresh;
         }
