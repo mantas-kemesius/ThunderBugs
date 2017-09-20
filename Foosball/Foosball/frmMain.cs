@@ -18,6 +18,9 @@ namespace Foosball
 {
     public partial class frmMain : Form
     {
+        public int redTeam = 0;
+        public int blueTeam = 0;
+
         // member variables ///////////////////////////////////////////////////////////////////////
         VideoCapture capWebcam;
         bool blnCapturingInProcess = false;
@@ -36,6 +39,8 @@ namespace Foosball
         {
             try
             {
+                // C:\\Users\\Mantas\\Desktop\\FoosBall-TOP-master\\testvideo3.mp4
+                // C:/Users/Mantas/Desktop/Git/ThunderBugs/foosball.mp4
                 capWebcam = new VideoCapture("C:/Users/Mantas/Desktop/Git/ThunderBugs/foosball.mp4");
             }
             catch (Exception ex)
@@ -94,11 +99,12 @@ namespace Foosball
 
             int[] Array;
             Array = new int[5000];
-            int cnt = 0;
+
 
             foreach (CircleF circle in circles)
             {
                 // ifs who check or it's not a player
+                
                 if ((int)circle.Center.X != 95 )
                 {
                     if ((int)circle.Center.X != 23)
@@ -125,7 +131,12 @@ namespace Foosball
                                                             {
                                                                 if ((int)circle.Center.X != 21)
                                                                 {
-
+                                                                    if ((int)circle.Center.X >= 413)
+                                                                        if((int)circle.Center.X <= 420)
+                                                                            if((int)circle.Center.Y >= 85)
+                                                                                if ((int)circle.Center.Y <= 135)
+                                                                                        redTeam++;
+                                                                    goalRed(redTeam);
                                                                     if (txtXYRadius.Text != "")
                                                                     {                         // if we are not on the first line in the text box
                                                                         txtXYRadius.AppendText(Environment.NewLine);         // then insert a new line char
@@ -135,7 +146,7 @@ namespace Foosball
                                                                     txtXYRadius.AppendText("ball position x = " + circle.Center.X.ToString().PadLeft(4) + ", y = " + circle.Center.Y.ToString().PadLeft(4) + ", radius = " + circle.Radius.ToString("###.000").PadLeft(7));
                                                                     txtXYRadius.ScrollToCaret();             // scroll down in text box so most recent line added (at the bottom) will be shown
 
-                                                                    CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius, new MCvScalar(0, 0, 255), 2);
+                                                                    CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius, new MCvScalar(255, 0, 0), 2, LineType.AntiAlias);
                                                                     CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), 3, new MCvScalar(0, 255, 0), -1);
 
                                                                     //CSV
@@ -144,6 +155,7 @@ namespace Foosball
                                                                     //Suggestion made by KyleMit
                                                                     var newLine = string.Format("{0},{1}", first, second);
                                                                     csv.AppendLine(newLine);
+
                                                                 }
                                                             }
                                                         }
@@ -182,6 +194,21 @@ namespace Foosball
                 blnCapturingInProcess = true;                       // update flag variable
                 btnPauseOrResume.Text = " Pause ";                  // new button will offer pause option
             }
+        }
+
+        private void tlbInner_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void goalRed(int red)
+        {
+            label3.Text = red.ToString();
+        }
+
+        private void goalBlue(int blue)
+        {
+            label3.Text = blue.ToString();
         }
     }
 }
