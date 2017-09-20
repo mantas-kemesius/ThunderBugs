@@ -24,6 +24,11 @@ namespace Foosball
         public frmMain()
         {
             InitializeComponent();
+         
+            
+                this.WindowState = FormWindowState.Maximized;
+                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            
         }
 
         private void frmMain_Load(object sender, EventArgs e)
@@ -74,14 +79,15 @@ namespace Foosball
 
             CvInvoke.Add(imgThreshLow, imgThreshHigh, imgThresh);
 
-            CvInvoke.GaussianBlur(imgThresh, imgThresh, new Size(3, 3), 0);
+            CvInvoke.GaussianBlur(imgThresh, imgThresh, new Size(3, 3), 500);
 
             Mat structuringElement = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(-1, -1));
 
             CvInvoke.Dilate(imgThresh, imgThresh, structuringElement, new Point(-1, -1), 1, BorderType.Default, new MCvScalar(0, 0, 0));
             CvInvoke.Erode(imgThresh, imgThresh, structuringElement, new Point(-1, -1), 1, BorderType.Default, new MCvScalar(0, 0, 0));
 
-            CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 100, 50, 10, 400);
+            CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 100, 30, 5, 10);
+            // 4, 100, 50, 10, 400
 
             foreach (CircleF circle in circles)
             {
