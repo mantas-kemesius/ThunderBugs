@@ -39,8 +39,8 @@ namespace Foosball
         {
             try
             {
-                // C:\\Users\\Mantas\\Desktop\\FoosBall-TOP-master\\testvideo3.mp4
                 // C:/Users/Mantas/Desktop/Git/ThunderBugs/foosball.mp4
+                // C:/Users/Mantas/Desktop/Git/ThunderBugs/video.mov
                 capWebcam = new VideoCapture("C:/Users/Mantas/Desktop/Git/ThunderBugs/foosball.mp4");
             }
             catch (Exception ex)
