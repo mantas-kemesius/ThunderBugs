@@ -95,11 +95,6 @@ namespace Foosball
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
             // 4, 100, 50, 10, 400
 
-            var csv = new StringBuilder();
-
-            int[] Array;
-            Array = new int[5000];
-
 
             foreach (CircleF circle in circles)
             {
@@ -131,17 +126,20 @@ namespace Foosball
                                                             {
                                                                 if ((int)circle.Center.X != 21)
                                                                 {
-                                                                    if ((int)circle.Center.X >= 413)
-                                                                        if((int)circle.Center.X <= 420)
-                                                                            if((int)circle.Center.Y >= 85)
-                                                                                if ((int)circle.Center.Y <= 135)
-                                                                                        redTeam++;
-                                                                    goalRed(redTeam);
+                                                                    var redTeam = new score();
+                                                                    var blueTeam = new score();
+
+                                                                    redTeam.redGoal((int)circle.Center.X, (int)circle.Center.Y);
+                                                                    blueTeam.blueGoal((int)circle.Center.X, (int)circle.Center.Y);
+
+                                                                    goalRed(redTeam.getGoalCount());
+                                                                    goalRed(blueTeam.getGoalCount());
+
                                                                     if (txtXYRadius.Text != "")
                                                                     {                         // if we are not on the first line in the text box
                                                                         txtXYRadius.AppendText(Environment.NewLine);         // then insert a new line char
                                                                     }
-
+                                                                 
 
                                                                     txtXYRadius.AppendText("ball position x = " + circle.Center.X.ToString().PadLeft(4) + ", y = " + circle.Center.Y.ToString().PadLeft(4) + ", radius = " + circle.Radius.ToString("###.000").PadLeft(7));
                                                                     txtXYRadius.ScrollToCaret();             // scroll down in text box so most recent line added (at the bottom) will be shown
@@ -149,12 +147,8 @@ namespace Foosball
                                                                     CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius, new MCvScalar(255, 0, 0), 2, LineType.AntiAlias);
                                                                     CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), 3, new MCvScalar(0, 255, 0), -1);
 
-                                                                    //CSV
-                                                                    var first = circle.Center.X.ToString().PadLeft(4);
-                                                                    var second = circle.Center.Y.ToString().PadLeft(4);
-                                                                    //Suggestion made by KyleMit
-                                                                    var newLine = string.Format("{0},{1}", first, second);
-                                                                    csv.AppendLine(newLine);
+                                                                    var file = new csvFile();
+                                                                    file.write(circle.Center.X.ToString().PadLeft(4), circle.Center.Y.ToString().PadLeft(4));
 
                                                                 }
                                                             }
