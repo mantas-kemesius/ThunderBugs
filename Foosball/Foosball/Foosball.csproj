@@ -57,7 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="csvFile.cs" />
+    <Compile Include="Coordinates.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>

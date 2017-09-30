@@ -18,21 +18,15 @@ namespace Foosball
 {
     public partial class frmMain : Form
     {
-        public int redTeam = 0;
-        public int blueTeam = 0;
 
-        // member variables ///////////////////////////////////////////////////////////////////////
         VideoCapture capWebcam;
         bool blnCapturingInProcess = false;
 
         public frmMain()
         {
             InitializeComponent();
-         
-            
-                this.WindowState = FormWindowState.Maximized;
-                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-            
+            this.WindowState = FormWindowState.Maximized;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
         }
 
         private void frmMain_Load(object sender, EventArgs e)
@@ -51,11 +45,9 @@ namespace Foosball
                 Environment.Exit(0);
                 return;
             }
-            Application.Idle += processFrameAndUpdateGUI;       // add process image function to the application's list of tasks
+            Application.Idle += processFrameAndUpdateGUI;
             blnCapturingInProcess = true;
         }
-
-
 
         void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
@@ -95,6 +87,8 @@ namespace Foosball
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
             // 4, 100, 50, 10, 400
 
+            var redTeam = new score();
+            var blueTeam = new score();
 
             foreach (CircleF circle in circles)
             {
@@ -126,14 +120,12 @@ namespace Foosball
                                                             {
                                                                 if ((int)circle.Center.X != 21)
                                                                 {
-                                                                    var redTeam = new score();
-                                                                    var blueTeam = new score();
 
                                                                     redTeam.redGoal((int)circle.Center.X, (int)circle.Center.Y);
                                                                     blueTeam.blueGoal((int)circle.Center.X, (int)circle.Center.Y);
 
                                                                     goalRed(redTeam.getGoalCount());
-                                                                    goalRed(blueTeam.getGoalCount());
+                                                                    goalBlue(blueTeam.getGoalCount());
 
                                                                     if (txtXYRadius.Text != "")
                                                                     {                         // if we are not on the first line in the text box
@@ -141,14 +133,14 @@ namespace Foosball
                                                                     }
                                                                  
 
-                                                                    txtXYRadius.AppendText("ball position x = " + circle.Center.X.ToString().PadLeft(4) + ", y = " + circle.Center.Y.ToString().PadLeft(4) + ", radius = " + circle.Radius.ToString("###.000").PadLeft(7));
-                                                                    txtXYRadius.ScrollToCaret();             // scroll down in text box so most recent line added (at the bottom) will be shown
+                                                                    txtXYRadius.AppendText("(" + circle.Center.X.ToString().PadLeft(4) + " ; " + circle.Center.Y.ToString().PadLeft(4) + "), radius = " + circle.Radius.ToString("###.000").PadLeft(7));
+                                                                    txtXYRadius.ScrollToCaret(); 
 
                                                                     CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius, new MCvScalar(255, 0, 0), 2, LineType.AntiAlias);
                                                                     CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), 3, new MCvScalar(0, 255, 0), -1);
 
-                                                                    var file = new csvFile();
-                                                                    file.write(circle.Center.X.ToString().PadLeft(4), circle.Center.Y.ToString().PadLeft(4));
+                                                                    var file = new Coordinates();
+                                                                    file.writeToCsv(circle.Center.X.ToString().PadLeft(4), circle.Center.Y.ToString().PadLeft(4));
 
                                                                 }
                                                             }
@@ -165,9 +157,6 @@ namespace Foosball
                 }
 
             }
-
-            File.AppendAllText("C:/Users/Mantas/Desktop/Git/ThunderBugs/test.csv", csv.ToString());
-
 
 
             ibOriginal.Image = imgOriginal;
@@ -202,7 +191,7 @@ namespace Foosball
 
         private void goalBlue(int blue)
         {
-            label3.Text = blue.ToString();
+            label4.Text = blue.ToString();
         }
     }
 }
