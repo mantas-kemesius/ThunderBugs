@@ -16,6 +16,8 @@ namespace Foosball
         //Let commentator to know who playing
         public Commentator(string firstPlayer, string secondPlayer)
         {
+            firstPlayer = "Blue team";
+            secondPlayer = "Red team";
             setFirstPlayer(firstPlayer);
             setSecondPlayer(secondPlayer);
         }
