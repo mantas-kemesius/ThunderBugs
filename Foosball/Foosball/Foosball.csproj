@@ -57,6 +57,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD:Foosball/Foosball/Foosball.csproj
+=======
+    <Compile Include="Commentator.cs" />
+    <Compile Include="Coordinates.cs" />
+>>>>>>> dev:Foosball/Foosball/Foosball.csproj
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,6 +70,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+<<<<<<< HEAD:Foosball/Foosball/Foosball.csproj
+=======
+    <Compile Include="score.cs" />
+>>>>>>> dev:Foosball/Foosball/Foosball.csproj
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>

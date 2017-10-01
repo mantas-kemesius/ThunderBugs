@@ -18,29 +18,43 @@ namespace Foosball
 {
     public partial class frmMain : Form
     {
+<<<<<<< HEAD
         public int redTeam = 0;
         public int blueTeam = 0;
 
         // member variables ///////////////////////////////////////////////////////////////////////
+=======
+
+>>>>>>> dev
         VideoCapture capWebcam;
         bool blnCapturingInProcess = false;
 
         public frmMain()
         {
             InitializeComponent();
+<<<<<<< HEAD
          
             
                 this.WindowState = FormWindowState.Maximized;
                 this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             
+=======
+            this.WindowState = FormWindowState.Maximized;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+>>>>>>> dev
         }
 
         private void frmMain_Load(object sender, EventArgs e)
         {
             try
             {
+<<<<<<< HEAD
                 // C:\\Users\\Mantas\\Desktop\\FoosBall-TOP-master\\testvideo3.mp4
                 // C:/Users/Mantas/Desktop/Git/ThunderBugs/foosball.mp4
+=======
+                // C:/Users/Mantas/Desktop/Git/ThunderBugs/foosball.mp4
+                // C:/Users/Mantas/Desktop/Git/ThunderBugs/video.mov
+>>>>>>> dev
                 capWebcam = new VideoCapture("C:/Users/Mantas/Desktop/Git/ThunderBugs/foosball.mp4");
             }
             catch (Exception ex)
@@ -51,12 +65,19 @@ namespace Foosball
                 Environment.Exit(0);
                 return;
             }
+<<<<<<< HEAD
             Application.Idle += processFrameAndUpdateGUI;       // add process image function to the application's list of tasks
             blnCapturingInProcess = true;
         }
 
 
 
+=======
+            Application.Idle += processFrameAndUpdateGUI;
+            blnCapturingInProcess = true;
+        }
+
+>>>>>>> dev
         void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
             Mat imgOriginal;
@@ -95,11 +116,16 @@ namespace Foosball
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
             // 4, 100, 50, 10, 400
 
+<<<<<<< HEAD
             var csv = new StringBuilder();
 
             int[] Array;
             Array = new int[5000];
 
+=======
+            var redTeam = new score();
+            var blueTeam = new score();
+>>>>>>> dev
 
             foreach (CircleF circle in circles)
             {
@@ -131,30 +157,52 @@ namespace Foosball
                                                             {
                                                                 if ((int)circle.Center.X != 21)
                                                                 {
+<<<<<<< HEAD
                                                                     if ((int)circle.Center.X >= 413)
                                                                         if((int)circle.Center.X <= 420)
                                                                             if((int)circle.Center.Y >= 85)
                                                                                 if ((int)circle.Center.Y <= 135)
                                                                                         redTeam++;
                                                                     goalRed(redTeam);
+=======
+
+                                                                    redTeam.redGoal((int)circle.Center.X, (int)circle.Center.Y);
+                                                                    blueTeam.blueGoal((int)circle.Center.X, (int)circle.Center.Y);
+
+                                                                    goalRed(redTeam.getGoalCount());
+                                                                    goalBlue(blueTeam.getGoalCount());
+
+>>>>>>> dev
                                                                     if (txtXYRadius.Text != "")
                                                                     {                         // if we are not on the first line in the text box
                                                                         txtXYRadius.AppendText(Environment.NewLine);         // then insert a new line char
                                                                     }
+<<<<<<< HEAD
 
 
                                                                     txtXYRadius.AppendText("ball position x = " + circle.Center.X.ToString().PadLeft(4) + ", y = " + circle.Center.Y.ToString().PadLeft(4) + ", radius = " + circle.Radius.ToString("###.000").PadLeft(7));
                                                                     txtXYRadius.ScrollToCaret();             // scroll down in text box so most recent line added (at the bottom) will be shown
+=======
+                                                                 
+
+                                                                    txtXYRadius.AppendText("(" + circle.Center.X.ToString().PadLeft(4) + " ; " + circle.Center.Y.ToString().PadLeft(4) + "), radius = " + circle.Radius.ToString("###.000").PadLeft(7));
+                                                                    txtXYRadius.ScrollToCaret(); 
+>>>>>>> dev
 
                                                                     CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius, new MCvScalar(255, 0, 0), 2, LineType.AntiAlias);
                                                                     CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), 3, new MCvScalar(0, 255, 0), -1);
 
+<<<<<<< HEAD
                                                                     //CSV
                                                                     var first = circle.Center.X.ToString().PadLeft(4);
                                                                     var second = circle.Center.Y.ToString().PadLeft(4);
                                                                     //Suggestion made by KyleMit
                                                                     var newLine = string.Format("{0},{1}", first, second);
                                                                     csv.AppendLine(newLine);
+=======
+                                                                    var file = new Coordinates();
+                                                                    file.writeToCsv(circle.Center.X.ToString().PadLeft(4), circle.Center.Y.ToString().PadLeft(4));
+>>>>>>> dev
 
                                                                 }
                                                             }
@@ -172,9 +220,12 @@ namespace Foosball
 
             }
 
+<<<<<<< HEAD
             File.AppendAllText("C:/Users/Mantas/Desktop/Git/ThunderBugs/test.csv", csv.ToString());
 
 
+=======
+>>>>>>> dev
 
             ibOriginal.Image = imgOriginal;
             ibThresh.Image = imgThresh;
@@ -208,7 +259,11 @@ namespace Foosball
 
         private void goalBlue(int blue)
         {
+<<<<<<< HEAD
             label3.Text = blue.ToString();
+=======
+            label4.Text = blue.ToString();
+>>>>>>> dev
         }
     }
 }
