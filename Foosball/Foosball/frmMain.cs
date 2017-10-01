@@ -18,7 +18,8 @@ namespace Foosball
 {
     public struct Coordinates
     {
-        public int X, Y, R;
+        public int X, Y;
+        public float R;
 
         public Coordinates(int X, int Y, int R)
         {
@@ -108,9 +109,9 @@ namespace Foosball
                 // ifs who check or it's not a player
                 Coords.X = (int)circle.Center.X;
                 Coords.Y = (int)circle.Center.Y;
-                Coords.R = (int)circle.Radius;
+                Coords.R = (float)circle.Radius;
 
-                if ((int)circle.Center.X != 95 )
+                if (Coords.X != 95 )
                 {
                     if (Coords.X != 23)
                     {
