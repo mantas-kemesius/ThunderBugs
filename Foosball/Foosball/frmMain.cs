@@ -16,6 +16,18 @@ using System.IO;
 
 namespace Foosball
 {
+    public struct Coordinates
+    {
+        public int X, Y, R;
+
+        public Coordinates(int X, int Y, int R)
+        {
+            this.X = X;
+            this.Y = Y;
+            this.R = R;
+        }
+    }
+
     public partial class frmMain : Form
     {
 
@@ -87,42 +99,46 @@ namespace Foosball
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
             // 4, 100, 50, 10, 400
 
-            var redTeam = new score();
-            var blueTeam = new score();
+            var redTeam = new Score();
+            var blueTeam = new Score();
+            var Coords = new Coordinates(0,0,0);
 
             foreach (CircleF circle in circles)
             {
                 // ifs who check or it's not a player
-                
+                Coords.X = (int)circle.Center.X;
+                Coords.Y = (int)circle.Center.Y;
+                Coords.R = (int)circle.Radius;
+
                 if ((int)circle.Center.X != 95 )
                 {
-                    if ((int)circle.Center.X != 23)
+                    if (Coords.X != 23)
                     {
-                        if ((int)circle.Center.X != 387)
+                        if (Coords.X != 387)
                         {
-                            if ((int)circle.Center.X != 385)
+                            if (Coords.X != 385)
                             {
-                                if ((int)circle.Center.X != 239)
+                                if (Coords.X != 239)
                                 {
-                                    if ((int)circle.Center.X != 267)
+                                    if (Coords.X != 267)
                                     {
-                                        if ((int)circle.Center.X != 93)
+                                        if (Coords.X != 93)
                                         {
-                                            if ((int)circle.Center.X != 503)
+                                            if (Coords.X != 503)
                                             {
-                                                if ((int)circle.Center.X != 97)
+                                                if (Coords.X != 97)
                                                 {
-                                                    if ((int)circle.Center.X != 273)
+                                                    if (Coords.X != 273)
                                                     {
-                                                        if ((int)circle.Center.X != 237)
+                                                        if (Coords.X != 237)
                                                         {
-                                                            if ((int)circle.Center.X != 25)
+                                                            if (Coords.X != 25)
                                                             {
-                                                                if ((int)circle.Center.X != 21)
+                                                                if (Coords.X != 21)
                                                                 {
 
-                                                                    redTeam.redGoal((int)circle.Center.X, (int)circle.Center.Y);
-                                                                    blueTeam.blueGoal((int)circle.Center.X, (int)circle.Center.Y);
+                                                                    redTeam.redGoal(Coords.X, Coords.Y);
+                                                                    blueTeam.blueGoal(Coords.X, Coords.Y);
 
                                                                     goalRed(redTeam.getGoalCount());
                                                                     goalBlue(blueTeam.getGoalCount());
@@ -133,14 +149,14 @@ namespace Foosball
                                                                     }
                                                                  
 
-                                                                    txtXYRadius.AppendText("(" + circle.Center.X.ToString().PadLeft(4) + " ; " + circle.Center.Y.ToString().PadLeft(4) + "), radius = " + circle.Radius.ToString("###.000").PadLeft(7));
+                                                                    txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) + "), radius = " + Coords.R.ToString("###.000").PadLeft(7));
                                                                     txtXYRadius.ScrollToCaret(); 
 
-                                                                    CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), (int)circle.Radius, new MCvScalar(255, 0, 0), 2, LineType.AntiAlias);
-                                                                    CvInvoke.Circle(imgOriginal, new Point((int)circle.Center.X, (int)circle.Center.Y), 3, new MCvScalar(0, 255, 0), -1);
+                                                                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius, new MCvScalar(255, 0, 0), 2, LineType.AntiAlias);
+                                                                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3, new MCvScalar(0, 255, 0), -1);
 
-                                                                    var file = new Coordinates();
-                                                                    file.writeToCsv(circle.Center.X.ToString().PadLeft(4), circle.Center.Y.ToString().PadLeft(4));
+                                                                    var file = new DataAnalysis();
+                                                                    file.writeToCsv(Coords.X.ToString().PadLeft(4), Coords.X.ToString().PadLeft(4));
 
                                                                 }
                                                             }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Foosball
 {
-    class score
+    class Score
     {
         private int goalCount = 0;
 

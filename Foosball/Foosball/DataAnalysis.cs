@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Foosball
 {
-    class Coordinates //prepare this class for also and database 
+    class DataAnalysis //prepare this class for also and database 
     {
         private string x;
         private string y;
