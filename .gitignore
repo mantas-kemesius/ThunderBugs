@@ -7,6 +7,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+Foosball/Foosball/obj/Debug/
+Foosball/Foosball/bin/Debug/
+Foosball/.vs/Foosball/v15/
+
+
 # User-specific files
 *.suo
 *.user
@@ -15,10 +20,6 @@
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
-
-Foosball/Foosball/obj/Debug/
-Foosball/Foosball/bin/Debug/
-Foosball/.vs/Foosball/v15/
 
 # Build results
 [Dd]ebug/
