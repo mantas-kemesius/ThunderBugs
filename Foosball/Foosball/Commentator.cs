@@ -20,6 +20,7 @@ namespace Foosball
             secondPlayer = "Red team";
             setFirstPlayer(firstPlayer);
             setSecondPlayer(secondPlayer);
+
         }
 
         public string introduction()

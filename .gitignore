@@ -7,11 +7,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-Foosball/
 Foosball/Foosball/bin/Debug/
 Foosball/.vs/Foosball/v15/
-
-Debug/
+Foosball/.vs/Foosball/v15/sqlite3/strorage.ide
+test.csv
 
 # User-specific files
 *.suo
