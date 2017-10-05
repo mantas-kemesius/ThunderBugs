@@ -11,6 +11,7 @@ namespace Foosball
     {
         private string x;
         private string y;
+        private string ofd;
 
         public void writeToCsv(string x, string y)
         {
@@ -22,17 +23,24 @@ namespace Foosball
             var newLine = string.Format("{0},{1}", first, second);
             csv.AppendLine(newLine);
 
-            File.AppendAllText("C:/Users/Mantas/Desktop/Git/ThunderBugs/test.csv", csv.ToString());
+            File.AppendAllText(Ofd, csv.ToString());
         }
 
-        public string getX()
+        public string X
         {
-            return this.x;
+            get;
+            set;
         }
 
-        public string getY()
+        public string Y
         {
-            return this.y;
+            get;
+            set;
+        }
+        public string Ofd
+        {
+            get;
+            set;
         }
     }
 }

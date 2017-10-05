@@ -34,6 +34,7 @@ namespace Foosball
 
         VideoCapture capWebcam;
         bool blnCapturingInProcess = false;
+        private OpenFileDialog ofd = null;
 
         public frmMain()
         {
@@ -46,9 +47,13 @@ namespace Foosball
         {
             try
             {
-                // C:/Users/Mantas/Desktop/Git/ThunderBugs/foosball.mp4
-                // C:/Users/Mantas/Desktop/Git/ThunderBugs/video.mov
-                capWebcam = new VideoCapture("C:/Users/Mantas/Desktop/Git/ThunderBugs/foosball.mp4");
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Filter = "Video Files |*.mp4";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    capWebcam = new VideoCapture(ofd.FileName);
+                }
             }
             catch (Exception ex)
             {
@@ -157,6 +162,16 @@ namespace Foosball
                                                                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3, new MCvScalar(0, 255, 0), -1);
 
                                                                     var file = new DataAnalysis();
+
+                                                                    if (ofd == null)
+                                                                    {
+                                                                        ofd = new OpenFileDialog();
+                                                                        ofd.Filter = "CSV file |*.csv";
+                                                                        ofd.ShowDialog();
+
+                                                                    }
+
+                                                                    file.Ofd = ofd.FileName;
                                                                     file.writeToCsv(Coords.X.ToString().PadLeft(4), Coords.X.ToString().PadLeft(4));
 
                                                                 }
