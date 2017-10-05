@@ -8,7 +8,7 @@ namespace Foosball
 {
     class Score
     {
-        private int goalCount = 0;
+        private int _goalCount = 0;
 
         public void redGoal (int x, int y)
         {
@@ -16,7 +16,7 @@ namespace Foosball
                 if (x <= 420)
                     if (y >= 85)
                         if (y <= 135)
-                            this.goalCount++;
+                            this._goalCount++;
         }
 
         public void blueGoal(int x, int y)
@@ -25,12 +25,12 @@ namespace Foosball
                 if (x <= 420)
                     if (y >= 85)
                         if (y <= 135)
-                            this.goalCount++;
+                            this._goalCount++;
         }
 
         public int getGoalCount()
         {
-            return this.goalCount;
+            return this._goalCount;
         }
     }
 }

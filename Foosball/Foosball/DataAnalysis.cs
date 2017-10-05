@@ -9,16 +9,16 @@ namespace Foosball
 {
     class DataAnalysis //prepare this class for also and database 
     {
-        private string x;
-        private string y;
-        private string ofd;
+        private string _x;
+        private string _y;
+        private string _ofd;
 
         public void writeToCsv(string x, string y)
         {
             var csv = new StringBuilder();
             //CSV
-            var first = x;
-            var second = y;
+            var first = _x;
+            var second = _y;
             //Suggestion made by KyleMit
             var newLine = string.Format("{0},{1}", first, second);
             csv.AppendLine(newLine);

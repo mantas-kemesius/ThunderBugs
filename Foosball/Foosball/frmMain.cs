@@ -34,7 +34,7 @@ namespace Foosball
 
         VideoCapture capWebcam;
         bool blnCapturingInProcess = false;
-        private OpenFileDialog ofd = null;
+        OpenFileDialog ofd = null;
 
         public frmMain()
         {

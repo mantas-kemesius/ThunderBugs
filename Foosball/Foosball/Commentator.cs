@@ -8,52 +8,42 @@ namespace Foosball
 {
     class Commentator
     {
-        private string firstPlayer;
-        private string secondPlayer;
-        private string comment;
+        private string _firstPlayer;
+        private string _secondPlayer;
+        private string _comment;
 
 
         //Let commentator to know who playing
-        public Commentator(string firstPlayer, string secondPlayer)
+        public Commentator(string _firstPlayer, string _secondPlayer)
         {
-            firstPlayer = "Blue team";
-            secondPlayer = "Red team";
-            setFirstPlayer(firstPlayer);
-            setSecondPlayer(secondPlayer);
-
+            _firstPlayer = "Blue team";
+            _secondPlayer = "Red team";
         }
 
         public string introduction()
         {
-            comment = $"Welcome {getFirstPlayer()} and {getSecondPlayer()}!";
+            _comment = $"Welcome {FirstPlayer} and {SecondPlayer}!";
 
-            return comment;
+            return _comment;
         }
 
         public string commentsAccordingCoordinates(int X, int Y)
         {
-            comment = $"Kamuolys kordinatese: x =  {X} ir y = {Y}!!";
-            return comment;
+            _comment = $"Kamuolys kordinatese: x =  {X} ir y = {Y}!!";
+            return _comment;
         }
         
-        private void setFirstPlayer(string name)
+        private string FirstPlayer
         {
-            firstPlayer = name;
+            get;
+            set;
         }
 
-        private string getFirstPlayer()
+        private string SecondPlayer
         {
-            return firstPlayer;
+            get;
+            set;
         }
 
-        private void setSecondPlayer(string name)
-        {
-            secondPlayer = name;
-        }
-
-        private string getSecondPlayer()
-        {
-            return secondPlayer;
-        }
     }
 }
