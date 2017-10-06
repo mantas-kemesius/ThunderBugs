@@ -31,6 +31,15 @@ namespace Foosball
         }
     }
 
+    [Flags]
+    enum BGRcolours
+    {
+        B1 = 0,   B2 =  18, B3 = 165, B4 = 179, B5 = 255, B6 =   0,
+        G1 = 155, G2 = 255, G3 = 155, G4 = 255, G5 =   0, G6 = 255,
+        R1 = 155, R2 = 255, R3 = 155, R4 = 255, R5 =   0, R6 =   0
+
+    }
+
     public partial class frmMain : Form
     {
 
@@ -93,8 +102,8 @@ namespace Foosball
 
             CvInvoke.CvtColor(imgOriginal, imgHSV, ColorConversion.Bgr2Hsv);
 
-            CvInvoke.InRange(imgHSV, new ScalarArray(new MCvScalar(0, 155, 155)), new ScalarArray(new MCvScalar(18, 255, 255)), imgThreshLow);
-            CvInvoke.InRange(imgHSV, new ScalarArray(new MCvScalar(165, 155, 155)), new ScalarArray(new MCvScalar(179, 255, 255)), imgThreshHigh);
+            CvInvoke.InRange(imgHSV, new ScalarArray(new MCvScalar((double)BGRcolours.B1, (double)BGRcolours.G1, (double)BGRcolours.R1)), new ScalarArray(new MCvScalar((double)BGRcolours.B2, (double)BGRcolours.G2, (double)BGRcolours.R2)), imgThreshLow);
+            CvInvoke.InRange(imgHSV, new ScalarArray(new MCvScalar((double)BGRcolours.B3, (double)BGRcolours.G3, (double)BGRcolours.R3)), new ScalarArray(new MCvScalar((double)BGRcolours.B4, (double)BGRcolours.G4, (double)BGRcolours.R4)), imgThreshHigh);
 
             CvInvoke.Add(imgThreshLow, imgThreshHigh, imgThresh);
 
@@ -139,11 +148,10 @@ namespace Foosball
                     txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) + "), radius = " + Coords.R.ToString("###.000").PadLeft(7));
                     txtXYRadius.ScrollToCaret();
 
-                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius, new MCvScalar(255, 0, 0), 2, LineType.AntiAlias);
-                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3, new MCvScalar(0, 255, 0), -1);
+                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius, new MCvScalar((double)BGRcolours.B5, (double)BGRcolours.G5, (double)BGRcolours.R5), 2, LineType.AntiAlias);
+                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3, new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
 
                     var file = new DataAnalysis();
-
 
                     if (_ofd == null)
                     {
