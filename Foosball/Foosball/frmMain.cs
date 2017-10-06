@@ -110,7 +110,11 @@ namespace Foosball
 
             var redTeam = new Score();
             var blueTeam = new Score();
+<<<<<<< HEAD
             var Coords = new Coordinates(0, 0, 0);
+=======
+            var Coords = new Coordinates(0,0,0);
+>>>>>>> master
 
             foreach (CircleF circle in circles)
             {
@@ -119,6 +123,7 @@ namespace Foosball
                 Coords.Y = (int)circle.Center.Y;
                 Coords.R = (float)circle.Radius;
 
+<<<<<<< HEAD
                 Regex regex = new Regex("95|23|387|385|239|267|93|503|97|273|237|25|21");
                 Match match = regex.Match(Coords.X.ToString());
 
@@ -152,6 +157,67 @@ namespace Foosball
                         _ofd.Filter = "CSV file |*.csv";
                         _ofd.ShowDialog();
 
+=======
+                if (Coords.X != 95 )
+                {
+                    if (Coords.X != 23)
+                    {
+                        if (Coords.X != 387)
+                        {
+                            if (Coords.X != 385)
+                            {
+                                if (Coords.X != 239)
+                                {
+                                    if (Coords.X != 267)
+                                    {
+                                        if (Coords.X != 93)
+                                        {
+                                            if (Coords.X != 503)
+                                            {
+                                                if (Coords.X != 97)
+                                                {
+                                                    if (Coords.X != 273)
+                                                    {
+                                                        if (Coords.X != 237)
+                                                        {
+                                                            if (Coords.X != 25)
+                                                            {
+                                                                if (Coords.X != 21)
+                                                                {
+
+                                                                    redTeam.redGoal(Coords.X, Coords.Y);
+                                                                    blueTeam.blueGoal(Coords.X, Coords.Y);
+
+                                                                    goalRed(redTeam.getGoalCount());
+                                                                    goalBlue(blueTeam.getGoalCount());
+
+                                                                    if (txtXYRadius.Text != "")
+                                                                    {                         // if we are not on the first line in the text box
+                                                                        txtXYRadius.AppendText(Environment.NewLine);         // then insert a new line char
+                                                                    }
+                                                                 
+
+                                                                    txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) + "), radius = " + Coords.R.ToString("###.000").PadLeft(7));
+                                                                    txtXYRadius.ScrollToCaret(); 
+
+                                                                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius, new MCvScalar(255, 0, 0), 2, LineType.AntiAlias);
+                                                                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3, new MCvScalar(0, 255, 0), -1);
+
+                                                                    var file = new DataAnalysis();
+                                                                    file.writeToCsv(Coords.X.ToString().PadLeft(4), Coords.X.ToString().PadLeft(4));
+
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+>>>>>>> master
                     }
 
                     file.Ofd = _ofd.FileName;
