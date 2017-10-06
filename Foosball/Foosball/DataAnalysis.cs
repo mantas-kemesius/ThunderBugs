@@ -39,8 +39,8 @@ namespace Foosball
         }
         public string Ofd
         {
-            get;
-            set;
+            get => _ofd;
+            set => _ofd = value;
         }
     }
 }
