@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commentator.cs" />
+    <Compile Include="Commentatorius.cs" />
     <Compile Include="DataAnalysis.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
