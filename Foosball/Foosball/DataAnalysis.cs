@@ -13,9 +13,8 @@ namespace Foosball
         {
             var csv = new StringBuilder();
             //CSV
-            var first = _x;
-            var second = _y;
-            //Suggestion made by KyleMit
+            var first = x;
+            var second = y;
             var newLine = string.Format("{0},{1}", first, second);
             csv.AppendLine(newLine);
 
