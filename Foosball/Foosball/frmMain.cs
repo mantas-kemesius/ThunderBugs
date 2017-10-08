@@ -34,6 +34,8 @@ namespace Foosball
         VideoCapture capWebcam;
         bool blnCapturingInProcess = false;
         private OpenFileDialog _ofd = null;
+        static int scoreR = 0;
+        static int scoreB = 0;
 
         public frmMain()
         {
@@ -68,6 +70,8 @@ namespace Foosball
 
         void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
+            var redTeam = new Score();
+            var blueTeam = new Score();
             Mat imgOriginal;
 
             imgOriginal = capWebcam.QueryFrame();
@@ -104,8 +108,6 @@ namespace Foosball
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
             // 4, 100, 50, 10, 400
 
-            var redTeam = new Score();
-            var blueTeam = new Score();
             var Coords = new Coordinates(0, 0, 0);
             var file = new DataAnalysis();
 
@@ -121,12 +123,21 @@ namespace Foosball
 
                 if (!match.Success)
                 {
-
                     redTeam.redGoal(Coords.X, Coords.Y);
+
+                    if (scoreR <= redTeam.getGoalCount())
+                    {
+                        scoreR = redTeam.getGoalCount();
+                    }
                     blueTeam.blueGoal(Coords.X, Coords.Y);
 
-                    goalRed(redTeam.getGoalCount());
-                    goalBlue(blueTeam.getGoalCount());
+                    if (scoreB <= blueTeam.getGoalCount())
+                    {
+                        scoreB = blueTeam.getGoalCount();
+                    }
+
+                    goalRed(scoreR);
+                    goalBlue(scoreB);
 
                     if (txtXYRadius.Text != "")
                     {                         // if we are not on the first line in the text box
