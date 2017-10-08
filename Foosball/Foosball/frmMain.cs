@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Emgu.CV;                  //
 using Emgu.CV.CvEnum;           // usual Emgu CV imports
 using Emgu.CV.Structure;        //
-using Emgu.CV.UI;               //
-using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Foosball
 {
@@ -28,27 +21,40 @@ namespace Foosball
             this.R = R;
         }
     }
+    enum BGRcolours
+    {
+        B1 = 0, B2 = 18, B3 = 165, B4 = 179, B5 = 255, B6 = 0,
+        G1 = 155, G2 = 255, G3 = 155, G4 = 255, G5 = 0, G6 = 255,
+        R1 = 155, R2 = 255, R3 = 155, R4 = 255, R5 = 0, R6 = 0
 
+    }
     public partial class frmMain : Form
     {
 
         VideoCapture capWebcam;
         bool blnCapturingInProcess = false;
+        private OpenFileDialog _ofd = null;
+        static int scoreR = 0;
+        static int scoreB = 0;
 
         public frmMain()
         {
             InitializeComponent();
             this.WindowState = FormWindowState.Maximized;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
         }
 
         private void frmMain_Load(object sender, EventArgs e)
         {
             try
             {
-                // C:/Users/Mantas/Desktop/Git/ThunderBugs/foosball.mp4
-                // C:/Users/Mantas/Desktop/Git/ThunderBugs/video.mov
-                capWebcam = new VideoCapture("C:/Users/Mantas/Desktop/Git/ThunderBugs/foosball.mp4");
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Filter = "Video Files |*.mp4";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    capWebcam = new VideoCapture(ofd.FileName);
+                }
             }
             catch (Exception ex)
             {
@@ -64,6 +70,9 @@ namespace Foosball
 
         void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
+
+            var redTeam = new Score();
+            var blueTeam = new Score();
             Mat imgOriginal;
 
             imgOriginal = capWebcam.QueryFrame();
@@ -85,8 +94,8 @@ namespace Foosball
 
             CvInvoke.CvtColor(imgOriginal, imgHSV, ColorConversion.Bgr2Hsv);
 
-            CvInvoke.InRange(imgHSV, new ScalarArray(new MCvScalar(0, 155, 155)), new ScalarArray(new MCvScalar(18, 255, 255)), imgThreshLow);
-            CvInvoke.InRange(imgHSV, new ScalarArray(new MCvScalar(165, 155, 155)), new ScalarArray(new MCvScalar(179, 255, 255)), imgThreshHigh);
+            CvInvoke.InRange(imgHSV, new ScalarArray(new MCvScalar((double)BGRcolours.B1, (double)BGRcolours.G1, (double)BGRcolours.R1)), new ScalarArray(new MCvScalar((double)BGRcolours.B2, (double)BGRcolours.G2, (double)BGRcolours.R2)), imgThreshLow);
+            CvInvoke.InRange(imgHSV, new ScalarArray(new MCvScalar((double)BGRcolours.B3, (double)BGRcolours.G3, (double)BGRcolours.R3)), new ScalarArray(new MCvScalar((double)BGRcolours.B4, (double)BGRcolours.G4, (double)BGRcolours.R4)), imgThreshHigh);
 
             CvInvoke.Add(imgThreshLow, imgThreshHigh, imgThresh);
 
@@ -100,9 +109,8 @@ namespace Foosball
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
             // 4, 100, 50, 10, 400
 
-            var redTeam = new Score();
-            var blueTeam = new Score();
-            var Coords = new Coordinates(0,0,0);
+            
+            var Coords = new Coordinates(0, 0, 0);
 
             foreach (CircleF circle in circles)
             {
@@ -111,73 +119,76 @@ namespace Foosball
                 Coords.Y = (int)circle.Center.Y;
                 Coords.R = (float)circle.Radius;
 
-                if (Coords.X != 95 )
+                Regex regex = new Regex("95|23|387|385|239|267|93|503|97|273|237|25|21");
+                Match match = regex.Match(Coords.X.ToString());
+
+                if (!match.Success)
                 {
-                    if (Coords.X != 23)
+                    redTeam.redGoal(Coords.X, Coords.Y);
+
+                    if (scoreR <=redTeam.getGoalCount())
                     {
-                        if (Coords.X != 387)
-                        {
-                            if (Coords.X != 385)
-                            {
-                                if (Coords.X != 239)
-                                {
-                                    if (Coords.X != 267)
-                                    {
-                                        if (Coords.X != 93)
-                                        {
-                                            if (Coords.X != 503)
-                                            {
-                                                if (Coords.X != 97)
-                                                {
-                                                    if (Coords.X != 273)
-                                                    {
-                                                        if (Coords.X != 237)
-                                                        {
-                                                            if (Coords.X != 25)
-                                                            {
-                                                                if (Coords.X != 21)
-                                                                {
-
-                                                                    redTeam.redGoal(Coords.X, Coords.Y);
-                                                                    blueTeam.blueGoal(Coords.X, Coords.Y);
-
-                                                                    goalRed(redTeam.getGoalCount());
-                                                                    goalBlue(blueTeam.getGoalCount());
-
-                                                                    if (txtXYRadius.Text != "")
-                                                                    {                         // if we are not on the first line in the text box
-                                                                        txtXYRadius.AppendText(Environment.NewLine);         // then insert a new line char
-                                                                    }
-                                                                 
-
-                                                                    txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) + "), radius = " + Coords.R.ToString("###.000").PadLeft(7));
-                                                                    txtXYRadius.ScrollToCaret(); 
-
-                                                                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius, new MCvScalar(255, 0, 0), 2, LineType.AntiAlias);
-                                                                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3, new MCvScalar(0, 255, 0), -1);
-
-                                                                    var file = new DataAnalysis();
-                                                                    file.writeToCsv(Coords.X.ToString().PadLeft(4), Coords.X.ToString().PadLeft(4));
-
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        scoreR = redTeam.getGoalCount();
                     }
+                    blueTeam.blueGoal(Coords.X, Coords.Y);
+
+                    if (scoreB <= blueTeam.getGoalCount())
+                    {
+                        scoreB = blueTeam.getGoalCount();
+                    }
+
+                    goalRed(scoreR);
+                    goalBlue(scoreB);
+
+                    if (txtXYRadius.Text != "")
+                    {                         // if we are not on the first line in the text box
+                        txtXYRadius.AppendText(Environment.NewLine);         // then insert a new line char
+                    }
+
+                    SidesCommentator commSides = new SidesCommentator();
+
+                    txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) + 
+                        "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
+                        commSides.commentsSide(Coords.X).PadLeft(100) + commSides.commentArea(Coords.X).PadLeft(75));
+                    txtXYRadius.ScrollToCaret();
+
+                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius, 
+                        new MCvScalar((double)BGRcolours.B5, (double)BGRcolours.G5, (double)BGRcolours.R5), 2, LineType.AntiAlias);
+                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3,
+                        new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
+
+                    var file = new DataAnalysis();
+
+                    if (_ofd == null)
+                    {
+                        _ofd = new OpenFileDialog();
+                        _ofd.Filter = "CSV file |*.csv";
+                        _ofd.ShowDialog();
+
+                    }
+
+                    file.Ofd = _ofd.FileName;
+                    file.writeToCsv(Coords.X.ToString().PadLeft(4), Coords.Y.ToString().PadLeft(4));
+
                 }
 
             }
 
+            /*Jei norim panaudot kur nors Commentator klasę, reikėtų kur nors šitą kodo gabalą įkišt.
+             * Šiaip, pačioj klasėj įgyvendinti reikalavimai keli, tai geriau būtų jos netrint, bet
+             * realiai, ar ją būtina naudot, tai nežinau.
+             * 
+             * Commentator c = new Commentator();
+            var player = new Player<string>();
+            player[0] = "Red team";
+            player[1] = "Blue team";
+
+            txtXYRadius.AppendText(c.introduction(player));*/
+
 
             ibOriginal.Image = imgOriginal;
             ibThresh.Image = imgThresh;
+
         }
 
         private void btnPauseOrResume_Click(object sender, EventArgs e)
