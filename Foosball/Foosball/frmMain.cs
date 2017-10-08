@@ -107,6 +107,7 @@ namespace Foosball
             var redTeam = new Score();
             var blueTeam = new Score();
             var Coords = new Coordinates(0, 0, 0);
+            var file = new DataAnalysis();
 
             foreach (CircleF circle in circles)
             {
@@ -143,8 +144,6 @@ namespace Foosball
                         new MCvScalar((double)BGRcolours.B5, (double)BGRcolours.G5, (double)BGRcolours.R5), 2, LineType.AntiAlias);
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3,
                         new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
-
-                    var file = new DataAnalysis();
 
                     if (_ofd == null)
                     {
