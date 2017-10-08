@@ -9,6 +9,11 @@
 
 Foosball/Foosball/bin/Debug/
 Foosball/.vs/Foosball/v15/
+<<<<<<< HEAD
+Foosball/.vs/Foosball/v15/sqlite3/strorage.ide
+test.csv
+=======
+>>>>>>> master
 
 # User-specific files
 *.suo

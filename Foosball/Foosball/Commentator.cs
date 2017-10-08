@@ -1,58 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Foosball
+﻿namespace Foosball
 {
+    class Player <T>
+    {
+        private T[] arr = new T[2];
+
+        public T this[int i]
+        {
+            get => arr[i];
+            set => arr[i] = value;
+        }
+    }
+   
     class Commentator
     {
-        private string firstPlayer;
-        private string secondPlayer;
-        private string comment;
+        private string _comment;
 
-
-        //Let commentator to know who playing
-        public Commentator(string firstPlayer, string secondPlayer)
+        public Commentator()
         {
-            firstPlayer = "Blue team";
-            secondPlayer = "Red team";
-            setFirstPlayer(firstPlayer);
-            setSecondPlayer(secondPlayer);
+           
         }
 
-        public string introduction()
-        {
-            comment = $"Welcome {getFirstPlayer()} and {getSecondPlayer()}!";
+        public string introduction(Player<string> player)
+        { 
+            _comment = $"Welcome {player[0]} and {player[1]}!\n";
 
-            return comment;
-        }
-
-        public string commentsAccordingCoordinates(int X, int Y)
-        {
-            comment = $"Kamuolys kordinatese: x =  {X} ir y = {Y}!!";
-            return comment;
-        }
-        
-        private void setFirstPlayer(string name)
-        {
-            firstPlayer = name;
-        }
-
-        private string getFirstPlayer()
-        {
-            return firstPlayer;
-        }
-
-        private void setSecondPlayer(string name)
-        {
-            secondPlayer = name;
-        }
-
-        private string getSecondPlayer()
-        {
-            return secondPlayer;
+            return _comment;
         }
     }
 }
