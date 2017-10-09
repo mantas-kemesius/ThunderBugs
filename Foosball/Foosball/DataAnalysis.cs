@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Foosball
 {
-    class DataAnalysis //prepare this class for also and database 
+    class DataAnalysis 
     {
         private string _x;
         private string _y;
@@ -12,7 +12,6 @@ namespace Foosball
         public void writeToCsv(string x, string y)
         {
             var csv = new StringBuilder();
-            //CSV
             var first = x;
             var second = y;
             var newLine = string.Format("{0},{1}", first, second);
