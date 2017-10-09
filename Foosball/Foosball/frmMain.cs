@@ -2,9 +2,9 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using Emgu.CV;                  //
-using Emgu.CV.CvEnum;           // usual Emgu CV imports
-using Emgu.CV.Structure;        //
+using Emgu.CV;                  
+using Emgu.CV.CvEnum;           
+using Emgu.CV.Structure;        
 using System.Text.RegularExpressions;
 
 namespace Foosball
@@ -106,14 +106,12 @@ namespace Foosball
             CvInvoke.Erode(imgThresh, imgThresh, structuringElement, new Point(-1, -1), 1, BorderType.Default, new MCvScalar(0, 0, 0));
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
-            // 4, 100, 50, 10, 400
 
             var Coords = new Coordinates(0, 0, 0);
             var file = new DataAnalysis();
 
             foreach (CircleF circle in circles)
             {
-                // ifs who check or it's not a player
                 Coords.X = (int)circle.Center.X;
                 Coords.Y = (int)circle.Center.Y;
                 Coords.R = (float)circle.Radius;
@@ -140,8 +138,8 @@ namespace Foosball
                     goalBlue(scoreB);
 
                     if (txtXYRadius.Text != "")
-                    {                         // if we are not on the first line in the text box
-                        txtXYRadius.AppendText(Environment.NewLine);         // then insert a new line char
+                    {                         
+                        txtXYRadius.AppendText(Environment.NewLine);
                     }
 
                     SidesCommentator commSides = new SidesCommentator();
@@ -171,18 +169,6 @@ namespace Foosball
 
             }
 
-            /*Jei norim panaudot kur nors Commentator klasę, reikėtų kur nors šitą kodo gabalą įkišt.
-             * Šiaip, pačioj klasėj įgyvendinti reikalavimai keli, tai geriau būtų jos netrint, bet
-             * realiai, ar ją būtina naudot, tai nežinau.
-             * 
-             * Commentator c = new Commentator();
-            var player = new Player<string>();
-            player[0] = "Red team";
-            player[1] = "Blue team";
-
-            txtXYRadius.AppendText(c.introduction(player));*/
-
-
             ibOriginal.Image = imgOriginal;
             ibThresh.Image = imgThresh;
 
@@ -191,16 +177,16 @@ namespace Foosball
         private void btnPauseOrResume_Click(object sender, EventArgs e)
         {
             if (blnCapturingInProcess == true)
-            {                    // if we are currently processing an image, user just choose pause, so . . .
-                Application.Idle -= processFrameAndUpdateGUI;       // remove the process image function from the application's list of tasks
-                blnCapturingInProcess = false;                      // update flag variable
-                btnPauseOrResume.Text = " Resume ";                 // update button text
+            {                    
+                Application.Idle -= processFrameAndUpdateGUI;       
+                blnCapturingInProcess = false;                      
+                btnPauseOrResume.Text = " Resume ";                 
             }
             else
-            {                                                // else if we are not currently processing an image, user just choose resume, so . . .
-                Application.Idle += processFrameAndUpdateGUI;       // add the process image function to the application's list of tasks
-                blnCapturingInProcess = true;                       // update flag variable
-                btnPauseOrResume.Text = " Pause ";                  // new button will offer pause option
+            {                                                
+                Application.Idle += processFrameAndUpdateGUI;       
+                blnCapturingInProcess = true;                       
+                btnPauseOrResume.Text = " Pause ";                  
             }
         }
 
