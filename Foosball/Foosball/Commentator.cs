@@ -10,21 +10,12 @@
             set => arr[i] = value;
         }
     }
-   
     class Commentator
     {
-        private string _comment;
 
-        public Commentator()
-        {
-           
-        }
-
-        public string introduction(Player<string> player)
+        public string Introduction(Player<string> player)
         { 
-            _comment = $"Welcome {player[0]} and {player[1]}!\n";
-
-            return _comment;
+            return $"Welcome {player[0]} and {player[1]}!\n";
         }
     }
 }

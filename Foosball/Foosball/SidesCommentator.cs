@@ -4,7 +4,7 @@ namespace Foosball
     class SidesCommentator
     {
         private string _comment;
-        ArrayList manRodCoord = new ArrayList();
+        ArrayList manRodCoord = new ArrayList();// { 50,102...};
 
 
         public SidesCommentator()
@@ -19,9 +19,9 @@ namespace Foosball
             manRodCoord.Add(499);
         }
 
-        public string commentsSide(int x)
+        public string commentsSide(int x)//geriau propertis, pakeist metodo pav
         {
-
+            //x>289?:...
             if (x >= 289) return _comment = "Ball is in the blue team area";
             else return _comment = "Ball is in the red team area";
             
@@ -29,6 +29,7 @@ namespace Foosball
         }
         public string commentArea(int x)
         {
+            //pasikeist, extention methodas pvz:isBetween, padavinet plikus skaicius, delegatu zodynas (func, grazinantis stringa)
             if (x < (int)manRodCoord[0]) return _comment = "Ball is near the red team gates";
             else if (x > (int)manRodCoord[0] && x < (int)manRodCoord[1]) return _comment = "Ball is between red three and two man rods";
             else if (x > (int)manRodCoord[1] && x < (int)manRodCoord[2]) return _comment = "Ball is between red two man and blue three man rods";

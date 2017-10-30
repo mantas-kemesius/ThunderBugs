@@ -70,7 +70,7 @@ namespace Foosball
 
         void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
-            var redTeam = new Score();
+            var redTeam = new Score();  //del sitos vietos kaskart nusinulina, ji reiktu iskelt kazkur globaliau
             var blueTeam = new Score();
             Mat imgOriginal;
 
@@ -83,7 +83,7 @@ namespace Foosball
                 Environment.Exit(0);
                 return;
             }
-
+            //metodas kitas nuo cia
             Mat imgHSV = new Mat(imgOriginal.Size, DepthType.Cv8U, 3);
 
             Mat imgThreshLow = new Mat(imgOriginal.Size, DepthType.Cv8U, 1);
@@ -106,7 +106,7 @@ namespace Foosball
             CvInvoke.Erode(imgThresh, imgThresh, structuringElement, new Point(-1, -1), 1, BorderType.Default, new MCvScalar(0, 0, 0));
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
-
+            //iki cia
             var Coords = new Coordinates(0, 0, 0);
             var file = new DataAnalysis();
 
@@ -122,7 +122,7 @@ namespace Foosball
                 if (!match.Success)
                 {
                     redTeam.redGoal(Coords.X, Coords.Y);
-
+                    //du kartus ta pati metoda kviecia, geriau butu tiesiog kazkam prisiskirt
                     if (scoreR <= redTeam.getGoalCount())
                     {
                         scoreR = redTeam.getGoalCount();
@@ -134,8 +134,8 @@ namespace Foosball
                         scoreB = blueTeam.getGoalCount();
                     }
 
-                    goalRed(scoreR);
-                    goalBlue(scoreB);
+                    setGoalRed(scoreR);
+                    setGoalBlue(scoreB);
 
                     if (txtXYRadius.Text != "")
                     {                         
@@ -146,7 +146,7 @@ namespace Foosball
 
                     txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) + 
                         "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
-                        commSides.commentsSide(Coords.X).PadLeft(100) + commSides.commentArea(Coords.X).PadLeft(75));
+                        commSides.WhichSide(Coords.X).PadLeft(100) + commSides.commentArea(Coords.X).PadLeft(75));
                     txtXYRadius.ScrollToCaret();
 
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius, 
@@ -163,7 +163,7 @@ namespace Foosball
                     }
 
                     file.Ofd = _ofd.FileName;
-                    file.writeToCsv(Coords.X.ToString().PadLeft(4), Coords.Y.ToString().PadLeft(4));
+                    file.WriteToCsv(Coords.X.ToString().PadLeft(4), Coords.Y.ToString().PadLeft(4));
 
                 }
 
@@ -195,12 +195,12 @@ namespace Foosball
 
         }
 
-        private void goalRed(int red)
+        private void setGoalRed(int red)
         {
             label3.Text = red.ToString();
         }
 
-        private void goalBlue(int blue)
+        private void setGoalBlue(int blue)
         {
             label4.Text = blue.ToString();
         }
