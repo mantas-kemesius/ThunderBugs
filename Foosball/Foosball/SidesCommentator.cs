@@ -6,8 +6,6 @@ namespace Foosball
 {
     class SidesCommentator
     {   
-        
-
         public string WhichSide(int x)//geriau propertis?
         {
             return x>289? "Ball is in the blue team area" : "Ball is in the red team area";
@@ -15,19 +13,20 @@ namespace Foosball
         public string commentArea(int x)
         {
 
-            //pasikeist, extention methodas pvz:isBetween, padavinet plikus skaicius, delegatu zodynas (func, grazinantis stringa)
-            /* if (x < 50) return "Ball is near the red team gates";
-             else if (x.Between(50, 102)) return "Ball is between red three and two man rods";
-             else if (x.Between(102, 178)) return "Ball is between red two man and blue three man rods";
-             else if (x.Between(178, 249)) return "Ball is between blue three man and red five man rods";
-             else if (x.Between(249, 337)) return "Ball is between red five man and blue five man rods";
-             else if (x.Between(337, 368)) return "Ball is between blue five man and red three man rods";
-             else if (x.Between(368, 470)) return "Ball is between red three man and blue two man rods";
-             else if (x.Between(470, 499)) return "Ball is between blue two and three man rods";
-             else if (x > 499) return "Ball is near the blue team gates";
-             else return "Ball is not detected";*/
+            Func<int, string> LocationFunc = BallLocation;
 
-            Dictionary<bool, Func<int, string>> LocationDictionary = new Dictionary<bool, Func<int, string>>
+            if (x < 50) return LocationFunc(0);
+            else if (x.Between(50, 102)) return LocationFunc(1);
+            else if (x.Between(102, 178)) return LocationFunc(2);
+            else if (x.Between(178, 249)) return LocationFunc(3);
+            else if (x.Between(249, 337)) return LocationFunc(4);
+            else if (x.Between(337, 368)) return LocationFunc(5);
+            else if (x.Between(368, 470)) return LocationFunc(6);
+            else if (x.Between(470, 499)) return LocationFunc(7);
+            else if (x > 499) return LocationFunc(8);
+            else return LocationFunc(-1);
+
+            /*Dictionary<bool, Func<int, string>> LocationDictionary = new Dictionary<bool, Func<int, string>>
             {
             };
 

@@ -9,7 +9,7 @@ namespace Foosball
 
         public void WriteToCsv(string x, string y)
         {
-            var csv = new StringBuilder(); //greiciausiai pakaks stringo (nu man nelabai pakanka dabar dar. gal reik geriau paziuret)
+            var csv = new StringBuilder();
             var newLine = string.Format("{0},{1}", x, y);
             csv.AppendLine(newLine);
 

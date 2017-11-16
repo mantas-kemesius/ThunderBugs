@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="Commentator.cs" />
     <Compile Include="DataAnalysis.cs" />
     <Compile Include="frmMain.cs">
