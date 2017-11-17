@@ -7,6 +7,8 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;        
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Media;
+using System.IO;
 
 namespace Foosball
 {
@@ -29,7 +31,7 @@ namespace Foosball
         private OpenFileDialog _ofd = null;
         static int scoreR = 0;
         static int scoreB = 0;
-
+       
         public frmMain()
         {
             InitializeComponent();
@@ -59,6 +61,13 @@ namespace Foosball
             }
             Application.Idle += processFrameAndUpdateGUI;
             blnCapturingInProcess = true;
+
+            if (_ofd == null)
+            {
+                _ofd = new OpenFileDialog();
+                _ofd.Filter = "CSV file |*.csv";
+                _ofd.ShowDialog();
+            }
         }
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
@@ -69,7 +78,6 @@ namespace Foosball
             var file = new DataAnalysis();
 
             Mat imgOriginal;
-
             imgOriginal = capWebcam.QueryFrame();
 
             if (imgOriginal == null)
@@ -83,6 +91,7 @@ namespace Foosball
             Mat imgThresh = await Task.Run(() => Recognition.FindingBallAsync(imgOriginal));
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
+           
             foreach (CircleF circle in circles)
             {
                 Coords.X = (int)circle.Center.X;
@@ -127,19 +136,9 @@ namespace Foosball
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3,
                         new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
 
-                    if (_ofd == null)
-                    {
-                        _ofd = new OpenFileDialog();
-                        _ofd.Filter = "CSV file |*.csv";
-                        _ofd.ShowDialog();
-
-                    }
-
                     file.Ofd = _ofd.FileName;
                     file.WriteToCsv(Coords.X.ToString().PadLeft(4), Coords.Y.ToString().PadLeft(4));
-
                 }
-
             }
 
             ibOriginal.Image = imgOriginal;
