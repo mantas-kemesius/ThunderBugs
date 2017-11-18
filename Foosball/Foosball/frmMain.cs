@@ -30,8 +30,7 @@ namespace Foosball
         bool blnCapturingInProcess = false;
         private OpenFileDialog _ofd = null;
         static int scoreR = 0;
-        static int scoreB = 0;
-       
+        static int scoreB = 0;       
         public frmMain()
         {
             InitializeComponent();
@@ -107,13 +106,13 @@ namespace Foosball
                     //du kartus ta pati metoda kviecia, geriau butu tiesiog kazkam prisiskirt
                     if (scoreR <= redTeam.getGoalCount())
                     {
-                        scoreR = redTeam.getGoalCount();
+                        scoreR = redTeam.getGoalCount();                      
                     }
                     blueTeam.blueGoal(Coords.X, Coords.Y);
 
                     if (scoreB <= blueTeam.getGoalCount())
                     {
-                        scoreB = blueTeam.getGoalCount();
+                        scoreB = blueTeam.getGoalCount();                        
                     }
 
                     setGoalRed(scoreR);
