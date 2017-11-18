@@ -44,6 +44,7 @@ namespace Foosball
             try
             {
                 OpenFileDialog ofd = new OpenFileDialog();
+
                 ofd.Filter = "Video Files |*.mp4";
 
                 if (ofd.ShowDialog() == DialogResult.OK)
@@ -61,17 +62,14 @@ namespace Foosball
             }
             Application.Idle += processFrameAndUpdateGUI;
             blnCapturingInProcess = true;
-
-            /*if (_ofd == null)
-            {
-                _ofd = new OpenFileDialog();
-                _ofd.Filter = "CSV file |*.csv";
-                _ofd.ShowDialog();
-            }*/
         }
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
+            //********** LAZY ***************************
+            Lazy<Player> player1 = new Lazy<Player>();
+            Lazy<Player> player2 = new Lazy<Player>();
+            //********** LAZY END ***************************
             var redCounter = new redScoreCounter();  //del sitos vietos kaskart nusinulina, ji reiktu iskelt kazkur globaliau
             var blueCounter = new blueScoreCounter();
 
@@ -95,7 +93,13 @@ namespace Foosball
             Mat imgThresh = await Task.Run(() => Recognition.FindingBallAsync(imgOriginal));
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
-           
+            //********** LAZY ***************************
+            player1.Value.name = "Jonas";
+            player1.Value.lastname = "Jonaitis";
+
+            player1.Value.name = "Petras";
+            player1.Value.lastname = "Petraitis";
+            //********* LAZY END *******************
             foreach (CircleF circle in circles)
             {
                 Coords.X = (int)circle.Center.X;

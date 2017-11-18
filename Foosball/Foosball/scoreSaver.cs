@@ -12,12 +12,13 @@
 
         public void count(int x, int y)
         {
-            _goalCount += _score.Goal(x, y);
+            this._goalCount += this._score.Goal(x, y);
         }
 
         public int getGoalCount()
         {
             return this._goalCount;
+
         }
     }
 }

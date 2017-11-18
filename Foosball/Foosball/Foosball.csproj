@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Player.cs" />
     <Compile Include="IScore.cs" />
     <Compile Include="Recognition.cs" />
     <Compile Include="Commentator.cs" />
