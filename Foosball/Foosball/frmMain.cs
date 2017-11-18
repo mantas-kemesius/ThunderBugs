@@ -2,10 +2,13 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using Emgu.CV;                  
+using Emgu.CV;     
 using Emgu.CV.CvEnum;           
 using Emgu.CV.Structure;        
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Media;
+using System.IO;
 
 namespace Foosball
 {
@@ -21,22 +24,14 @@ namespace Foosball
             this.R = R;
         }
     }
-    enum BGRcolours
-    {
-        B1 = 0, B2 = 18, B3 = 165, B4 = 179, B5 = 255, B6 = 0,
-        G1 = 155, G2 = 255, G3 = 155, G4 = 255, G5 = 0, G6 = 255,
-        R1 = 155, R2 = 255, R3 = 155, R4 = 255, R5 = 0, R6 = 0
-
-    }
     public partial class frmMain : Form
     {
-
         VideoCapture capWebcam;
         bool blnCapturingInProcess = false;
         private OpenFileDialog _ofd = null;
         static int scoreR = 0;
         static int scoreB = 0;
-
+       
         public frmMain()
         {
             InitializeComponent();
@@ -66,14 +61,23 @@ namespace Foosball
             }
             Application.Idle += processFrameAndUpdateGUI;
             blnCapturingInProcess = true;
+
+            if (_ofd == null)
+            {
+                _ofd = new OpenFileDialog();
+                _ofd.Filter = "CSV file |*.csv";
+                _ofd.ShowDialog();
+            }
         }
 
-        void processFrameAndUpdateGUI(object sender, EventArgs arg)
+        async void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
-            var redTeam = new Score();
+            var redTeam = new Score();  //del sitos vietos kaskart nusinulina, ji reiktu iskelt kazkur globaliau
             var blueTeam = new Score();
-            Mat imgOriginal;
+            var Coords = new Coordinates(0, 0, 0);
+            var file = new DataAnalysis();
 
+            Mat imgOriginal;
             imgOriginal = capWebcam.QueryFrame();
 
             if (imgOriginal == null)
@@ -84,32 +88,10 @@ namespace Foosball
                 return;
             }
 
-            Mat imgHSV = new Mat(imgOriginal.Size, DepthType.Cv8U, 3);
-
-            Mat imgThreshLow = new Mat(imgOriginal.Size, DepthType.Cv8U, 1);
-            Mat imgThreshHigh = new Mat(imgOriginal.Size, DepthType.Cv8U, 1);
-
-            Mat imgThresh = new Mat(imgOriginal.Size, DepthType.Cv8U, 1);
-
-            CvInvoke.CvtColor(imgOriginal, imgHSV, ColorConversion.Bgr2Hsv);
-
-            CvInvoke.InRange(imgHSV, new ScalarArray(new MCvScalar((double)BGRcolours.B1, (double)BGRcolours.G1, (double)BGRcolours.R1)), new ScalarArray(new MCvScalar((double)BGRcolours.B2, (double)BGRcolours.G2, (double)BGRcolours.R2)), imgThreshLow);
-            CvInvoke.InRange(imgHSV, new ScalarArray(new MCvScalar((double)BGRcolours.B3, (double)BGRcolours.G3, (double)BGRcolours.R3)), new ScalarArray(new MCvScalar((double)BGRcolours.B4, (double)BGRcolours.G4, (double)BGRcolours.R4)), imgThreshHigh);
-
-            CvInvoke.Add(imgThreshLow, imgThreshHigh, imgThresh);
-
-            CvInvoke.GaussianBlur(imgThresh, imgThresh, new Size(3, 3), 500);
-
-            Mat structuringElement = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(-1, -1));
-
-            CvInvoke.Dilate(imgThresh, imgThresh, structuringElement, new Point(-1, -1), 1, BorderType.Default, new MCvScalar(0, 0, 0));
-            CvInvoke.Erode(imgThresh, imgThresh, structuringElement, new Point(-1, -1), 1, BorderType.Default, new MCvScalar(0, 0, 0));
+            Mat imgThresh = await Task.Run(() => Recognition.FindingBallAsync(imgOriginal));
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
-
-            var Coords = new Coordinates(0, 0, 0);
-            var file = new DataAnalysis();
-
+           
             foreach (CircleF circle in circles)
             {
                 Coords.X = (int)circle.Center.X;
@@ -122,7 +104,7 @@ namespace Foosball
                 if (!match.Success)
                 {
                     redTeam.redGoal(Coords.X, Coords.Y);
-
+                    //du kartus ta pati metoda kviecia, geriau butu tiesiog kazkam prisiskirt
                     if (scoreR <= redTeam.getGoalCount())
                     {
                         scoreR = redTeam.getGoalCount();
@@ -134,8 +116,8 @@ namespace Foosball
                         scoreB = blueTeam.getGoalCount();
                     }
 
-                    goalRed(scoreR);
-                    goalBlue(scoreB);
+                    setGoalRed(scoreR);
+                    setGoalBlue(scoreB);
 
                     if (txtXYRadius.Text != "")
                     {                         
@@ -146,7 +128,7 @@ namespace Foosball
 
                     txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) + 
                         "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
-                        commSides.commentsSide(Coords.X).PadLeft(100) + commSides.commentArea(Coords.X).PadLeft(75));
+                        commSides.WhichSide(Coords.X).PadLeft(100) + commSides.commentArea(Coords.X).PadLeft(75));
                     txtXYRadius.ScrollToCaret();
 
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius, 
@@ -154,19 +136,9 @@ namespace Foosball
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3,
                         new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
 
-                    if (_ofd == null)
-                    {
-                        _ofd = new OpenFileDialog();
-                        _ofd.Filter = "CSV file |*.csv";
-                        _ofd.ShowDialog();
-
-                    }
-
                     file.Ofd = _ofd.FileName;
-                    file.writeToCsv(Coords.X.ToString().PadLeft(4), Coords.Y.ToString().PadLeft(4));
-
+                    file.WriteToCsv(Coords.X.ToString().PadLeft(4), Coords.Y.ToString().PadLeft(4));
                 }
-
             }
 
             ibOriginal.Image = imgOriginal;
@@ -195,12 +167,12 @@ namespace Foosball
 
         }
 
-        private void goalRed(int red)
+        private void setGoalRed(int red)
         {
             label3.Text = red.ToString();
         }
 
-        private void goalBlue(int blue)
+        private void setGoalBlue(int blue)
         {
             label4.Text = blue.ToString();
         }
