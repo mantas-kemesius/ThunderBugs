@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Media;
 using System.IO;
+using System.ComponentModel;
 
 namespace Foosball
 {
@@ -71,8 +72,12 @@ namespace Foosball
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
-            var redTeam = new Score();  //del sitos vietos kaskart nusinulina, ji reiktu iskelt kazkur globaliau
-            var blueTeam = new Score();
+            var redCounter = new redScoreCounter();  //del sitos vietos kaskart nusinulina, ji reiktu iskelt kazkur globaliau
+            var blueCounter = new blueScoreCounter();
+
+            var redTeam = new scoreSaver(redCounter);
+            var blueTeam = new scoreSaver(blueCounter);
+
             var Coords = new Coordinates(0, 0, 0);
             //var file = new DataAnalysis();
 
@@ -102,13 +107,13 @@ namespace Foosball
 
                 if (!match.Success)
                 {
-                    redTeam.redGoal(Coords.X, Coords.Y);
+                    redTeam.count(Coords.X, Coords.Y);
                     //du kartus ta pati metoda kviecia, geriau butu tiesiog kazkam prisiskirt
                     if (scoreR <= redTeam.getGoalCount())
                     {
                         scoreR = redTeam.getGoalCount();                      
                     }
-                    blueTeam.blueGoal(Coords.X, Coords.Y);
+                    blueTeam.count(Coords.X, Coords.Y);
 
                     if (scoreB <= blueTeam.getGoalCount())
                     {

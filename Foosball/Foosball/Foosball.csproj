@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IScore.cs" />
     <Compile Include="Recognition.cs" />
     <Compile Include="Commentator.cs" />
     <Compile Include="DataAnalysis.cs" />
@@ -69,7 +70,9 @@
     <Compile Include="isBetween.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Score.cs" />
+    <Compile Include="blueScoreCounter.cs" />
+    <Compile Include="redScoreCounter.cs" />
+    <Compile Include="scoreSaver.cs" />
     <Compile Include="SidesCommentator.cs" />
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
