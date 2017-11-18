@@ -2,10 +2,13 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using Emgu.CV;                  //
-using Emgu.CV.CvEnum;           // usual Emgu CV imports
-using Emgu.CV.Structure;        //
+using Emgu.CV;     
+using Emgu.CV.CvEnum;           
+using Emgu.CV.Structure;        
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Media;
+using System.IO;
 
 namespace Foosball
 {
@@ -21,31 +24,33 @@ namespace Foosball
             this.R = R;
         }
     }
-    enum BGRcolours
-    {
-        B1 = 0, B2 = 18, B3 = 165, B4 = 179, B5 = 255, B6 = 0,
-        G1 = 155, G2 = 255, G3 = 155, G4 = 255, G5 = 0, G6 = 255,
-        R1 = 155, R2 = 255, R3 = 155, R4 = 255, R5 = 0, R6 = 0
-
-    }
     public partial class frmMain : Form
     {
-
         VideoCapture capWebcam;
         bool blnCapturingInProcess = false;
         private OpenFileDialog _ofd = null;
-        static int scoreR = 0;
-        static int scoreB = 0;
-
+        public delegate void Value(int value);
+        static int scoreR;
+        static int scoreB;
         public frmMain()
         {
             InitializeComponent();
             this.WindowState = FormWindowState.Maximized;
             this.FormBorderStyle = FormBorderStyle.Sizable;
         }
-
+        Value scoR = delegate (int val)
+        {
+            scoreR = val;
+        };
+        Value scoB = delegate (int val)
+        {
+            scoreB = val;
+        };
         private void frmMain_Load(object sender, EventArgs e)
         {
+            scoR(0);
+            scoB(0);
+
             try
             {
                 OpenFileDialog ofd = new OpenFileDialog();
@@ -66,15 +71,23 @@ namespace Foosball
             }
             Application.Idle += processFrameAndUpdateGUI;
             blnCapturingInProcess = true;
+
+            if (_ofd == null)
+            {
+                _ofd = new OpenFileDialog();
+                _ofd.Filter = "CSV file |*.csv";
+                _ofd.ShowDialog();
+            }
         }
 
-        void processFrameAndUpdateGUI(object sender, EventArgs arg)
+        async void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
-
-            var redTeam = new Score();
+            var redTeam = new Score();  //del sitos vietos kaskart nusinulina, ji reiktu iskelt kazkur globaliau
             var blueTeam = new Score();
-            Mat imgOriginal;
+            var Coords = new Coordinates(0, 0, 0);
+            var file = new DataAnalysis();
 
+            Mat imgOriginal;
             imgOriginal = capWebcam.QueryFrame();
 
             if (imgOriginal == null)
@@ -85,36 +98,12 @@ namespace Foosball
                 return;
             }
 
-            Mat imgHSV = new Mat(imgOriginal.Size, DepthType.Cv8U, 3);
-
-            Mat imgThreshLow = new Mat(imgOriginal.Size, DepthType.Cv8U, 1);
-            Mat imgThreshHigh = new Mat(imgOriginal.Size, DepthType.Cv8U, 1);
-
-            Mat imgThresh = new Mat(imgOriginal.Size, DepthType.Cv8U, 1);
-
-            CvInvoke.CvtColor(imgOriginal, imgHSV, ColorConversion.Bgr2Hsv);
-
-            CvInvoke.InRange(imgHSV, new ScalarArray(new MCvScalar((double)BGRcolours.B1, (double)BGRcolours.G1, (double)BGRcolours.R1)), new ScalarArray(new MCvScalar((double)BGRcolours.B2, (double)BGRcolours.G2, (double)BGRcolours.R2)), imgThreshLow);
-            CvInvoke.InRange(imgHSV, new ScalarArray(new MCvScalar((double)BGRcolours.B3, (double)BGRcolours.G3, (double)BGRcolours.R3)), new ScalarArray(new MCvScalar((double)BGRcolours.B4, (double)BGRcolours.G4, (double)BGRcolours.R4)), imgThreshHigh);
-
-            CvInvoke.Add(imgThreshLow, imgThreshHigh, imgThresh);
-
-            CvInvoke.GaussianBlur(imgThresh, imgThresh, new Size(3, 3), 500);
-
-            Mat structuringElement = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(-1, -1));
-
-            CvInvoke.Dilate(imgThresh, imgThresh, structuringElement, new Point(-1, -1), 1, BorderType.Default, new MCvScalar(0, 0, 0));
-            CvInvoke.Erode(imgThresh, imgThresh, structuringElement, new Point(-1, -1), 1, BorderType.Default, new MCvScalar(0, 0, 0));
+            Mat imgThresh = await Task.Run(() => Recognition.FindingBallAsync(imgOriginal));
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
-            // 4, 100, 50, 10, 400
-
-            
-            var Coords = new Coordinates(0, 0, 0);
 
             foreach (CircleF circle in circles)
             {
-                // ifs who check or it's not a player
                 Coords.X = (int)circle.Center.X;
                 Coords.Y = (int)circle.Center.Y;
                 Coords.R = (float)circle.Radius;
@@ -125,8 +114,8 @@ namespace Foosball
                 if (!match.Success)
                 {
                     redTeam.redGoal(Coords.X, Coords.Y);
-
-                    if (scoreR <=redTeam.getGoalCount())
+                    //du kartus ta pati metoda kviecia, geriau butu tiesiog kazkam prisiskirt
+                    if (scoreR <= redTeam.getGoalCount())
                     {
                         scoreR = redTeam.getGoalCount();
                     }
@@ -137,54 +126,31 @@ namespace Foosball
                         scoreB = blueTeam.getGoalCount();
                     }
 
-                    goalRed(scoreR);
-                    goalBlue(scoreB);
+                    setGoalRed(scoreR);
+                    setGoalBlue(scoreB);
+                    setWin(scoreR, scoreB);
 
                     if (txtXYRadius.Text != "")
-                    {                         // if we are not on the first line in the text box
-                        txtXYRadius.AppendText(Environment.NewLine);         // then insert a new line char
+                    {
+                        txtXYRadius.AppendText(Environment.NewLine);
                     }
 
                     SidesCommentator commSides = new SidesCommentator();
 
-                    txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) + 
+                    txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) +
                         "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
-                        commSides.commentsSide(Coords.X).PadLeft(100) + commSides.commentArea(Coords.X).PadLeft(75));
+                        commSides.WhichSide(Coords.X).PadLeft(100) + commSides.commentArea(Coords.X).PadLeft(75));
                     txtXYRadius.ScrollToCaret();
 
-                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius, 
+                    CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius,
                         new MCvScalar((double)BGRcolours.B5, (double)BGRcolours.G5, (double)BGRcolours.R5), 2, LineType.AntiAlias);
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3,
                         new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
 
-                    var file = new DataAnalysis();
-
-                    if (_ofd == null)
-                    {
-                        _ofd = new OpenFileDialog();
-                        _ofd.Filter = "CSV file |*.csv";
-                        _ofd.ShowDialog();
-
-                    }
-
                     file.Ofd = _ofd.FileName;
-                    file.writeToCsv(Coords.X.ToString().PadLeft(4), Coords.Y.ToString().PadLeft(4));
-
+                    file.WriteToCsv(Coords.X.ToString().PadLeft(4), Coords.Y.ToString().PadLeft(4));
                 }
-
             }
-
-            /*Jei norim panaudot kur nors Commentator klasę, reikėtų kur nors šitą kodo gabalą įkišt.
-             * Šiaip, pačioj klasėj įgyvendinti reikalavimai keli, tai geriau būtų jos netrint, bet
-             * realiai, ar ją būtina naudot, tai nežinau.
-             * 
-             * Commentator c = new Commentator();
-            var player = new Player<string>();
-            player[0] = "Red team";
-            player[1] = "Blue team";
-
-            txtXYRadius.AppendText(c.introduction(player));*/
-
 
             ibOriginal.Image = imgOriginal;
             ibThresh.Image = imgThresh;
@@ -194,16 +160,16 @@ namespace Foosball
         private void btnPauseOrResume_Click(object sender, EventArgs e)
         {
             if (blnCapturingInProcess == true)
-            {                    // if we are currently processing an image, user just choose pause, so . . .
-                Application.Idle -= processFrameAndUpdateGUI;       // remove the process image function from the application's list of tasks
-                blnCapturingInProcess = false;                      // update flag variable
-                btnPauseOrResume.Text = " Resume ";                 // update button text
+            {
+                Application.Idle -= processFrameAndUpdateGUI;
+                blnCapturingInProcess = false;
+                btnPauseOrResume.Text = " Resume ";
             }
             else
-            {                                                // else if we are not currently processing an image, user just choose resume, so . . .
-                Application.Idle += processFrameAndUpdateGUI;       // add the process image function to the application's list of tasks
-                blnCapturingInProcess = true;                       // update flag variable
-                btnPauseOrResume.Text = " Pause ";                  // new button will offer pause option
+            {
+                Application.Idle += processFrameAndUpdateGUI;
+                blnCapturingInProcess = true;
+                btnPauseOrResume.Text = " Pause ";
             }
         }
 
@@ -212,14 +178,52 @@ namespace Foosball
 
         }
 
-        private void goalRed(int red)
+        private void setGoalRed(int red)
         {
             label3.Text = red.ToString();
         }
 
-        private void goalBlue(int blue)
+        private void setGoalBlue(int blue)
         {
             label4.Text = blue.ToString();
         }
+        private void setWin(int red, int blue)
+        {
+            string msg = "wins";
+            string bl = "Blue Team";
+            string re = "Red Team";
+            MyClass myClass1 = new MyClass();
+            myClass1.MyEvent += new MyClass.MyDelegate(myClass1_MyEvent);
+
+            if (red > blue)
+            {
+                msg = "Red";
+                myClass1.RaiseEvent(msg);
+                label2.Text = bl;
+            }
+            else if (blue > red)
+            {
+                msg = "Blue";
+                myClass1.RaiseEvent(msg);
+                label1.Text = re;
+            }
+            else
+            {
+                label1.Text = re;
+                label2.Text = bl;
+            }
+        }
+
+        public void myClass1_MyEvent(string message)
+        {
+            string msg = " Team Wins";
+            if (message == "Red")
+            {
+                label1.Text = message + msg;
+            }
+            else { label2.Text = message + msg; }
+        }
     }
 }
+
+
