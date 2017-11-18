@@ -61,12 +61,12 @@ namespace Foosball
             Application.Idle += processFrameAndUpdateGUI;
             blnCapturingInProcess = true;
 
-            if (_ofd == null)
+            /*if (_ofd == null)
             {
                 _ofd = new OpenFileDialog();
                 _ofd.Filter = "CSV file |*.csv";
                 _ofd.ShowDialog();
-            }
+            }*/
         }
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
@@ -74,7 +74,7 @@ namespace Foosball
             var redTeam = new Score();  //del sitos vietos kaskart nusinulina, ji reiktu iskelt kazkur globaliau
             var blueTeam = new Score();
             var Coords = new Coordinates(0, 0, 0);
-            var file = new DataAnalysis();
+            //var file = new DataAnalysis();
 
             Mat imgOriginal;
             imgOriginal = capWebcam.QueryFrame();
@@ -135,8 +135,8 @@ namespace Foosball
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3,
                         new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
 
-                    file.Ofd = _ofd.FileName;
-                    file.WriteToCsv(Coords.X.ToString().PadLeft(4), Coords.Y.ToString().PadLeft(4));
+                    //file.Ofd = _ofd.FileName;
+                   // file.WriteToCsv(Coords.X.ToString().PadLeft(4), Coords.Y.ToString().PadLeft(4));
                 }
             }
 
