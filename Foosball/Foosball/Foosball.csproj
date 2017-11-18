@@ -57,7 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyClass.cs" />
+    <Compile Include="EventClass.cs" />
     <Compile Include="Recognition.cs" />
     <Compile Include="Commentator.cs" />
     <Compile Include="DataAnalysis.cs" />

@@ -1,6 +1,6 @@
 ﻿namespace Foosball
 {
-    class MyClass
+    class EventClass
     {
         public delegate void MyDelegate(string message);
         public event MyDelegate MyEvent;

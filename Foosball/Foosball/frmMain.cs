@@ -192,19 +192,19 @@ namespace Foosball
             string msg = "wins";
             string bl = "Blue Team";
             string re = "Red Team";
-            MyClass myClass1 = new MyClass();
-            myClass1.MyEvent += new MyClass.MyDelegate(myClass1_MyEvent);
+            EventClass eClass1 = new EventClass();
+            eClass1.MyEvent += new EventClass.MyDelegate(eClass1_MyEvent);
 
             if (red > blue)
             {
                 msg = "Red";
-                myClass1.RaiseEvent(msg);
+                eClass1.RaiseEvent(msg);
                 label2.Text = bl;
             }
             else if (blue > red)
             {
                 msg = "Blue";
-                myClass1.RaiseEvent(msg);
+                eClass1.RaiseEvent(msg);
                 label1.Text = re;
             }
             else
@@ -214,7 +214,7 @@ namespace Foosball
             }
         }
 
-        public void myClass1_MyEvent(string message)
+        public void eClass1_MyEvent(string message)
         {
             string msg = " Team Wins";
             if (message == "Red")
