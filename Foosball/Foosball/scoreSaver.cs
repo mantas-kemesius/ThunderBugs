@@ -1,6 +1,6 @@
 ﻿namespace Foosball
 {
-   public class scoreSaver
+    public class scoreSaver
     {
         private int _goalCount = 0;
         private IScore _score;

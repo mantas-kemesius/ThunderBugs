@@ -1,6 +1,6 @@
 ﻿namespace Foosball
 {
-    class blueScoreCounter: IScore
+    class blueScoreCounter : IScore
     {
 
         public int Goal(int y, int x)
