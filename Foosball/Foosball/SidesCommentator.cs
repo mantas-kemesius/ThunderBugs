@@ -4,7 +4,7 @@ namespace Foosball
 {
     class SidesCommentator
     {   
-        public string WhichSide(int x)//geriau propertis?
+        public string WhichSide(int x)
         {
             return x>289? "Ball is in the blue team area" : "Ball is in the red team area";
         }
@@ -23,32 +23,6 @@ namespace Foosball
             else if (x.Between(470, 499)) return LocationFunc(7);
             else if (x > 499) return LocationFunc(8);
             else return LocationFunc(-1);
-
-            // Nuemiau usingus tai genericui atgal prisidek jei ka
-            //using System.Collections;
-            //using System.Collections.Generic;
-
-            /*Dictionary<bool, Func<int, string>> LocationDictionary = new Dictionary<bool, Func<int, string>>
-            {
-            };
-
-            LocationDictionary[x.Between(0, 50)] = new Func<int, string>
-                (
-                    (i) => { return BallLocation(i);}
-                );
-
-            return LocationDictionary[x.Between(0, 50)](1);
-                /*{ x.Between(0, 50), BallLocation},
-                { x.Between(50, 102), BallLocation},
-                { x.Between(102, 178), BallLocation},
-                { x.Between(178, 249), BallLocation},
-                { x.Between(249, 337), BallLocation},
-                { x.Between(337, 368), BallLocation},
-                { x.Between(368, 470), BallLocation},
-                { x.Between(470, 499), BallLocation},
-                { x.Between(499, 520), BallLocation},*/
-            //}
-
         }
 
         private static string BallLocation (int nr)

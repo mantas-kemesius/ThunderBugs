@@ -71,28 +71,19 @@ namespace Foosball
             }
             Application.Idle += processFrameAndUpdateGUI;
             blnCapturingInProcess = true;
-
-            /*if (_ofd == null)
-            {
-                _ofd = new OpenFileDialog();
-                _ofd.Filter = "CSV file |*.csv";
-                _ofd.ShowDialog();
-            }*/
         }
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
-            //********** LAZY ***************************
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
-                        //********** LAZY END ***************************
-            var redCounter = new redScoreCounter();  //del sitos vietos kaskart nusinulina, ji reiktu iskelt kazkur globaliau
+            
+            var redCounter = new redScoreCounter();
             var blueCounter = new blueScoreCounter();
             
             var redTeam = new scoreSaver(redCounter);
             var blueTeam = new scoreSaver(blueCounter);
             var Coords = new Coordinates(0, 0, 0);
-            //var file = new DataAnalysis();
 
             Mat imgOriginal;
             imgOriginal = capWebcam.QueryFrame();
@@ -106,13 +97,12 @@ namespace Foosball
             Mat imgThresh = await Task.Run(() => Recognition.FindingBallAsync(imgOriginal));
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
-            //********** LAZY ***************************
+
             player1.Value.name = "Jonas";
             player1.Value.lastname = "Jonaitis";
 
             player1.Value.name = "Petras";
             player1.Value.lastname = "Petraitis";
-            //********* LAZY END *******************
 
             foreach (CircleF circle in circles)
             {
@@ -126,13 +116,11 @@ namespace Foosball
                 if (!match.Success)
                 {
                     redTeam.count(Coords.X, Coords.Y);
-                    //du kartus ta pati metoda kviecia, geriau butu tiesiog kazkam prisiskirt
                     if (scoreR <= redTeam.getGoalCount())
                     {
                         scoreR = redTeam.getGoalCount();
                     }
                     blueTeam.count(Coords.X, Coords.Y);
-
                     if (scoreB <= blueTeam.getGoalCount())
                     {
                         scoreB = blueTeam.getGoalCount();
@@ -158,9 +146,6 @@ namespace Foosball
                         new MCvScalar((double)BGRcolours.B5, (double)BGRcolours.G5, (double)BGRcolours.R5), 2, LineType.AntiAlias);
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3,
                         new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
-
-                    //file.Ofd = _ofd.FileName;
-                   // file.WriteToCsv(Coords.X.ToString().PadLeft(4), Coords.Y.ToString().PadLeft(4));
                 }
             }
 
