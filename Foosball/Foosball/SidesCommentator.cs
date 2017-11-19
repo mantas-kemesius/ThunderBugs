@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Foosball
 {
@@ -25,6 +23,10 @@ namespace Foosball
             else if (x.Between(470, 499)) return LocationFunc(7);
             else if (x > 499) return LocationFunc(8);
             else return LocationFunc(-1);
+
+            // Nuemiau usingus tai genericui atgal prisidek jei ka
+            //using System.Collections;
+            //using System.Collections.Generic;
 
             /*Dictionary<bool, Func<int, string>> LocationDictionary = new Dictionary<bool, Func<int, string>>
             {
