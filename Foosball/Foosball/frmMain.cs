@@ -82,8 +82,15 @@ namespace Foosball
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
-            var redTeam = new Score();  //del sitos vietos kaskart nusinulina, ji reiktu iskelt kazkur globaliau
-            var blueTeam = new Score();
+            //********** LAZY ***************************
+            Lazy < Player > player1 = new Lazy<Player>();
+            Lazy < Player > player2 = new Lazy<Player>();
+                        //********** LAZY END ***************************
+            var redCounter = new redScoreCounter();  //del sitos vietos kaskart nusinulina, ji reiktu iskelt kazkur globaliau
+            var blueCounter = new blueScoreCounter();
+            
+            var redTeam = new scoreSaver(redCounter);
+            var blueTeam = new scoreSaver(blueCounter);
             var Coords = new Coordinates(0, 0, 0);
             //var file = new DataAnalysis();
 
@@ -99,6 +106,13 @@ namespace Foosball
             Mat imgThresh = await Task.Run(() => Recognition.FindingBallAsync(imgOriginal));
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
+            //********** LAZY ***************************
+            player1.Value.name = "Jonas";
+            player1.Value.lastname = "Jonaitis";
+
+            player1.Value.name = "Petras";
+            player1.Value.lastname = "Petraitis";
+            //********* LAZY END *******************
 
             foreach (CircleF circle in circles)
             {
@@ -111,13 +125,13 @@ namespace Foosball
 
                 if (!match.Success)
                 {
-                    redTeam.redGoal(Coords.X, Coords.Y);
+                    redTeam.count(Coords.X, Coords.Y);
                     //du kartus ta pati metoda kviecia, geriau butu tiesiog kazkam prisiskirt
                     if (scoreR <= redTeam.getGoalCount())
                     {
                         scoreR = redTeam.getGoalCount();
                     }
-                    blueTeam.blueGoal(Coords.X, Coords.Y);
+                    blueTeam.count(Coords.X, Coords.Y);
 
                     if (scoreB <= blueTeam.getGoalCount())
                     {
