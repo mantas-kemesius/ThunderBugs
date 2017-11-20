@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Emgu.CV;
+﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using System.Drawing;
