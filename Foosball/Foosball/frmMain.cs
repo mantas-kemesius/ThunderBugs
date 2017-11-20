@@ -94,7 +94,7 @@ namespace Foosball
                 Environment.Exit(0);
             }
 
-            Mat imgThresh = await Task.Run(() => Recognition.FindingBallAsync(imgOriginal));
+            Mat imgThresh = await Task.Run(() => Recognition.FindingBall(imgOriginal));
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
 

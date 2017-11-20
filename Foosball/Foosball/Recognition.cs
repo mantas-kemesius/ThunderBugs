@@ -14,7 +14,7 @@ namespace Foosball
     }
     public static class Recognition
     {
-        public static async Task<Mat> FindingBallAsync(Mat imgOriginal)
+        public static Mat FindingBall(Mat imgOriginal)
         {
             Mat imgHSV = new Mat(imgOriginal.Size, DepthType.Cv8U, 3);
             Mat imgThreshLow = new Mat(imgOriginal.Size, DepthType.Cv8U, 1);
