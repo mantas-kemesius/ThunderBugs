@@ -10,11 +10,19 @@ namespace Foosball_app.Controllers
 {
     public class FoosballController : Controller
     {
-        // GET: Foosball
+        //[HttpGet]
         public ActionResult Index()
         {
+           
             return View();
         }
+
+        //[HttpPost]
+        //public ActionResult IndexPost(VideoRecord video)
+        //{
+          //  var v = new VideoCapture();
+         //   return View();
+        //}
     }
 
 }
