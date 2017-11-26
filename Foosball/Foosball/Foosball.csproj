@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="blueScoreCounter.cs" />
+    <Compile Include="Foosball.cs" />
     <Compile Include="IScore.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="CustomExceptions.cs" />

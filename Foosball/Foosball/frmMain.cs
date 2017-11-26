@@ -7,6 +7,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace Foosball
 {
@@ -77,7 +78,14 @@ namespace Foosball
         {
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
+
+            Foosball foosball = new Foosball() { redPlayer = "Jadze", bluePlayer = "Kazimieras", blueScore = 1, redScore = 2 };
+            HttpClient clint = new HttpClient();
+            var stringContent = new StringContent(foosball.ToString());
+            clint.BaseAddress = new Uri("http://localhost/");
+            HttpResponseMessage response = clint.PostAsync("http://localhost:50438/api/foosballs", stringContent).Result;
             
+
             var redCounter = new redScoreCounter();
             var blueCounter = new blueScoreCounter();
             
