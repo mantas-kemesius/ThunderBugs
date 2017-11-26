@@ -9,6 +9,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Net.Http;
 
+using System.Net;
+using System.IO;
+
 namespace Foosball
 {
     public struct Coordinates
@@ -73,18 +76,39 @@ namespace Foosball
             Application.Idle += processFrameAndUpdateGUI;
             blnCapturingInProcess = true;
         }
+        public static readonly HttpClient client = new HttpClient();
+        public static string url = "http://localhost:50438/api/foosballs/";
+        public static System.Net.HttpListener listener = new System.Net.HttpListener();
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
 
-            Foosball foosball = new Foosball() { redPlayer = "Jadze", bluePlayer = "Kazimieras", blueScore = 1, redScore = 2 };
-            HttpClient clint = new HttpClient();
-            var stringContent = new StringContent(foosball.ToString());
-            clint.BaseAddress = new Uri("http://localhost/");
-            HttpResponseMessage response = clint.PostAsync("http://localhost:50438/api/foosballs", stringContent).Result;
-            
+            //*******************************************************************************************************
+
+            Console.WriteLine("Setting up listener");
+            listener.Prefixes.Add("http://localhost:50438/api/foosballs/");
+            listener.Start();
+            if (listener.IsListening)
+            {
+                Console.WriteLine("HTTP listener set up");
+            }
+            else Console.WriteLine("Failed to set up HTTP listener");
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(frmMain.url);
+                httpWebRequest.ContentType = "application/json";
+                httpWebRequest.Method = "POST";
+                Foosball output = new Foosball(1,2);
+                string jsonOut = JsonConvert.SerializeObject(output);
+                httpWebRequest.ContentLength = jsonOut.Length;
+                using (var writer = new StreamWriter(httpWebRequest.GetRequestStream()))
+                {
+                    writer.Write(jsonOut);
+                }
+                var response = httpWebRequest.GetResponse() as HttpWebResponse;
+
+            //******************************************************************************************************
 
             var redCounter = new redScoreCounter();
             var blueCounter = new blueScoreCounter();
