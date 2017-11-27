@@ -85,8 +85,6 @@ namespace Foosball
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
 
-            //*******************************************************************************************************
-
             Console.WriteLine("Setting up listener");
             listener.Prefixes.Add("http://localhost:50438/api/foosballs/");
             listener.Start();
@@ -107,8 +105,6 @@ namespace Foosball
                     writer.Write(jsonOut);
                 }
                 var response = httpWebRequest.GetResponse() as HttpWebResponse;
-
-            //******************************************************************************************************
 
             var redCounter = new redScoreCounter();
             var blueCounter = new blueScoreCounter();
