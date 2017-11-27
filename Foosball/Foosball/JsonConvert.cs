@@ -6,6 +6,7 @@ namespace Foosball
     {
         internal static string SerializeObject(Foosball output)
         {
+            // TODO kimutis : ?
             throw new NotImplementedException();
         }
     }

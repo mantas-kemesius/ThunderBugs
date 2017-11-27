@@ -40,13 +40,18 @@ namespace Foosball
             this.WindowState = FormWindowState.Maximized;
             this.FormBorderStyle = FormBorderStyle.Sizable;
         }
+
+        // TODO kimutis : why do we need a delegate for this?
         Value scoR = delegate (int val)
         {
             scoreR = val;
         };
+
+        // TODO kimutis : and a second one here?
         Value scoB = val => scoreB = val;
         private void frmMain_Load(object sender, EventArgs e)
         {
+            // TODO kimutis : why do we need to set it to zero, if its already done when defining scores?
             scoR(0);
             scoB(0);
 
@@ -76,8 +81,12 @@ namespace Foosball
             Application.Idle += processFrameAndUpdateGUI;
             blnCapturingInProcess = true;
         }
+
+        // TODO kimutis : all fields and properties should be defined in one place
         public static readonly HttpClient client = new HttpClient();
         public static string url = "http://localhost:50438/api/foosballs/";
+
+        // TODO kimutis : redundant namespace should be removed
         public static System.Net.HttpListener listener = new System.Net.HttpListener();
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
@@ -85,6 +94,8 @@ namespace Foosball
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
 
+
+            // TODO kimutis : what is this? for things like that in c# we can use #region
             //*******************************************************************************************************
 
             Console.WriteLine("Setting up listener");
@@ -94,6 +105,7 @@ namespace Foosball
             {
                 Console.WriteLine("HTTP listener set up");
             }
+            // TODO kimutis : two things. 1. curly brackets 2.this kind of failure should have a retry strategy
             else Console.WriteLine("Failed to set up HTTP listener");
 
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(frmMain.url);
@@ -110,6 +122,7 @@ namespace Foosball
 
             //******************************************************************************************************
 
+            // TODO kimutis : redCounter,redTeam, player1, scoreR... maybe we could have a single game model?
             var redCounter = new redScoreCounter();
             var blueCounter = new blueScoreCounter();
             
@@ -218,6 +231,7 @@ namespace Foosball
         }
         private void setWin(int red, int blue)
         {
+            // TODO kimutis : there are many hardcoded values used - please move it to separate class (Constants)
             string msg = "wins";
             string bl = "Blue Team";
             string re = "Red Team";
@@ -226,6 +240,8 @@ namespace Foosball
 
             if (red > blue)
             {
+                // TODO kimutis : msg becomes from wins to Red?
+                // TODO kimutis : msg should be an enum
                 msg = "Red";
                 eClass1.RaiseEvent(msg);
                 label2.Text = bl;

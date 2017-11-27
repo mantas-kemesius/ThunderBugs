@@ -1,4 +1,5 @@
-﻿using System;
+﻿// TODO kimutis : please remove usings
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -6,6 +7,7 @@ using System.Web;
 
 namespace Foosball
 {
+    // TODO kimutis : too abstract name
     public class Foosball
     {
         public int RedTeamScore { get; set; }

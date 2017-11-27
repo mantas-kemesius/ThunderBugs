@@ -1,4 +1,7 @@
-﻿namespace Foosball
+﻿
+
+// TODO kimutis : this looks like example from internet that is not even used
+namespace Foosball
 {
     delegate string delegates<T1, T2>(T1 a, T2 b);
 

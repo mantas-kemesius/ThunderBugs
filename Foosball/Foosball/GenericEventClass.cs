@@ -10,13 +10,16 @@ namespace Foosball
         {
             msg = messageData;
         }
+
+        // TODO kimutis : thats an auto property
         public string Message
         {
             get { return msg; }
             set { msg = value; }
         }
     }
-     
+
+    // TODO kimutis : not used?
     public class HasEvent
     {
         public event EventHandler<GenericEventClass> SampleEvent;

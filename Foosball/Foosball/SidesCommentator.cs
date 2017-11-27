@@ -6,7 +6,8 @@ namespace Foosball
     {   
         public string WhichSide(int x)
         {
-            return x>289? "Ball is in the blue team area" : "Ball is in the red team area";
+            // TODO kimutis : all hardcoded values should be moved to Constants class
+            return x >289? "Ball is in the blue team area" : "Ball is in the red team area";
         }
         public string commentArea(int x)
         {
