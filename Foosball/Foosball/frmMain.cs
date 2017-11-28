@@ -45,6 +45,7 @@ namespace Foosball
             scoreR = val;
         };
         Value scoB = val => scoreB = val;
+
         private void frmMain_Load(object sender, EventArgs e)
         {
             scoR(0);
@@ -76,15 +77,17 @@ namespace Foosball
             Application.Idle += processFrameAndUpdateGUI;
             blnCapturingInProcess = true;
         }
+
         public static readonly HttpClient client = new HttpClient();
-        public static string url = "http://localhost:50438/api/foosballs/";
-        public static System.Net.HttpListener listener = new System.Net.HttpListener();
+        public static string url = "http://localhost:5000/api/scores/";
+        bool zero = false;
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
 
+<<<<<<< HEAD
             Console.WriteLine("Setting up listener");
             listener.Prefixes.Add("http://localhost:50438/api/foosballs/");
             listener.Start();
@@ -105,6 +108,9 @@ namespace Foosball
                     writer.Write(jsonOut);
                 }
                 var response = httpWebRequest.GetResponse() as HttpWebResponse;
+=======
+            HttpPut put = new HttpPut();
+>>>>>>> 573a5970db4edb18b4a3558d3960aafe436cd9b5
 
             var redCounter = new redScoreCounter();
             var blueCounter = new blueScoreCounter();
@@ -129,8 +135,14 @@ namespace Foosball
             player1.Value.name = "Jonas";
             player1.Value.lastname = "Jonaitis";
 
-            player1.Value.name = "Petras";
-            player1.Value.lastname = "Petraitis";
+            player2.Value.name = "Petras";
+            player2.Value.lastname = "Petraitis";
+
+            if (zero == false)
+            {
+                put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
+                zero = true;
+            }
 
             foreach (CircleF circle in circles)
             {
@@ -144,14 +156,16 @@ namespace Foosball
                 if (!match.Success)
                 {
                     redTeam.count(Coords.X, Coords.Y);
-                    if (scoreR <= redTeam.getGoalCount())
+                    if (scoreR < redTeam.getGoalCount())
                     {
                         scoreR = redTeam.getGoalCount();
+                        put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
                     }
                     blueTeam.count(Coords.X, Coords.Y);
-                    if (scoreB <= blueTeam.getGoalCount())
+                    if (scoreB < blueTeam.getGoalCount())
                     {
                         scoreB = blueTeam.getGoalCount();
+                        put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
                     }
 
                     setGoalRed(scoreR);
