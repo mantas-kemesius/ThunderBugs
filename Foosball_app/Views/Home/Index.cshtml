@@ -7,8 +7,22 @@
         <div class="header-content-inner">
             <h1 id="homeHeading">FoosBall App</h1>
             <hr>
+            <!--
             <p>Play foosball online!</p>
-            <a class="btn btn-primary btn-xl js-scroll-trigger" href="@Url.Action("Index", "Foosball")">Play the Foosball!</a>
+            <a class="btn btn-primary btn-xl js-scroll-trigger" href="@Url.Action("Index", "Foosball")">Play the Foosball!</a>-->
+            @{
+                var redScore = ViewData["2"];
+                var redName = ViewData["1"];
+                var blueScore = ViewData["3"];
+                var blueName = ViewData["4"];
+            }
+            <div align = "center">
+                <div style="padding-top: 100px; padding-bottom: 100px; padding-right: 100px; padding-left:100px; background-color:black; color:white;">
+                    <h1><strong style="color:blue;">@blueName</strong> Prieš <strong style="color:red;">@redName</strong></h1><br />
+                    <h2>Rezultatas:</h2>
+                    <h1>@blueScore - @redScore</h1>
+            </div>
+        </div>
         </div>
     </div>
 </header>
