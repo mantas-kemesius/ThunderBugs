@@ -124,11 +124,14 @@ namespace Foosball
                     }
 
                     SidesCommentator commSides = new SidesCommentator();
+                    commSides.commentArea(Coords.X);
 
                     txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) + 
                         "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
-                        commSides.WhichSide(Coords.X).PadLeft(100) + commSides.commentArea(Coords.X).PadLeft(75));
+                        commSides.WhichSide(Coords.X).PadLeft(100) + commSides.Ball.LocationCommentator.PadLeft(75));
                     txtXYRadius.ScrollToCaret();
+
+                    commSides.SetCmp(Coords.X);
 
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius, 
                         new MCvScalar((double)BGRcolours.B5, (double)BGRcolours.G5, (double)BGRcolours.R5), 2, LineType.AntiAlias);
