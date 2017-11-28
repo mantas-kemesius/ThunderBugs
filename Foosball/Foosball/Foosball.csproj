@@ -68,7 +68,6 @@
     <Compile Include="GenericEventClass.cs" />
     <Compile Include="GenericMethodClass.cs" />
     <Compile Include="Recognition.cs" />
-    <Compile Include="Commentator.cs" />
     <Compile Include="DataAnalysis.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
