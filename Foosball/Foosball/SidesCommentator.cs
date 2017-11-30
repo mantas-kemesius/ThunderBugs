@@ -8,12 +8,11 @@ namespace Foosball
     {
         private int _cmp=-1;
         private bool _check=false;
-        public BallLocationChanges Ball = new BallLocationChanges();
+        private BallLocationChanges Ball = new BallLocationChanges();
         public string WhichSide(int x)//geriau propertis?
         {
             return x>289? "Ball is in the blue team area" : "Ball is in the red team area";
         }
-
         public void SetCmp (int x)
         {
             _cmp = x;
