@@ -34,6 +34,8 @@ namespace Foosball
         public delegate void Value(int value);
         static int scoreR=0;
         static int scoreB=0;
+        private int checking = 0;
+        private Timer sw = new Timer();
         public frmMain()
         {
             InitializeComponent();
@@ -87,7 +89,7 @@ namespace Foosball
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
 
-<<<<<<< HEAD
+/*<<<<<<< HEAD
             Console.WriteLine("Setting up listener");
             listener.Prefixes.Add("http://localhost:50438/api/foosballs/");
             listener.Start();
@@ -110,7 +112,7 @@ namespace Foosball
                 var response = httpWebRequest.GetResponse() as HttpWebResponse;
 =======
             HttpPut put = new HttpPut();
->>>>>>> 573a5970db4edb18b4a3558d3960aafe436cd9b5
+>>>>>>> 573a5970db4edb18b4a3558d3960aafe436cd9b5*/
 
             var redCounter = new redScoreCounter();
             var blueCounter = new blueScoreCounter();
@@ -118,6 +120,7 @@ namespace Foosball
             var redTeam = new scoreSaver(redCounter);
             var blueTeam = new scoreSaver(blueCounter);
             var Coords = new Coordinates(0, 0, 0);
+            bool isNew;
 
             Mat imgOriginal;
             imgOriginal = capWebcam.QueryFrame();
@@ -138,17 +141,23 @@ namespace Foosball
             player2.Value.name = "Petras";
             player2.Value.lastname = "Petraitis";
 
-            if (zero == false)
+            /*if (zero == false)
             {
                 put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
                 zero = true;
-            }
+            }*/
 
             foreach (CircleF circle in circles)
             {
                 Coords.X = (int)circle.Center.X;
                 Coords.Y = (int)circle.Center.Y;
                 Coords.R = (float)circle.Radius;
+
+                if (checking == Coords.X)
+                {
+                    isNew = true;
+                }
+                else isNew = false;
 
                 Regex regex = new Regex("95|23|387|385|239|267|93|503|97|273|237|25|21");
                 Match match = regex.Match(Coords.X.ToString());
@@ -159,13 +168,13 @@ namespace Foosball
                     if (scoreR < redTeam.getGoalCount())
                     {
                         scoreR = redTeam.getGoalCount();
-                        put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
+                        //put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
                     }
                     blueTeam.count(Coords.X, Coords.Y);
                     if (scoreB < blueTeam.getGoalCount())
                     {
                         scoreB = blueTeam.getGoalCount();
-                        put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
+                        //put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
                     }
 
                     setGoalRed(scoreR);
@@ -177,11 +186,12 @@ namespace Foosball
                         txtXYRadius.AppendText(Environment.NewLine);
                     }
 
-                    SidesCommentator commSides = new SidesCommentator();
+                    BallFinder ballFinder = new BallFinder();
+                    BallLocationChanges Ball = new BallLocationChanges();
 
                     txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) +
                         "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
-                        commSides.WhichSide(Coords.X).PadLeft(100) + commSides.commentArea(Coords.X).PadLeft(75));
+                        ballFinder.WhichSide(Coords.X).PadLeft(75) + Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew).PadLeft(75) + Ball.TimeCommentator(isNew).PadLeft(25));
                     txtXYRadius.ScrollToCaret();
 
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius,
@@ -190,7 +200,7 @@ namespace Foosball
                         new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
                 }
             }
-
+            checking = Coords.X;
             ibOriginal.Image = imgOriginal;
             ibThresh.Image = imgThresh;
 

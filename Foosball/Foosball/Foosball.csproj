@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="blueScoreCounter.cs" />
+    <Compile Include="BallLocationChanges.cs" />
     <Compile Include="Foosball.cs" />
     <Compile Include="HttpPut.cs" />
     <Compile Include="IScore.cs" />
@@ -84,7 +85,7 @@
     <Compile Include="redScoreCounter.cs" />
     <Compile Include="Score.cs" />
     <Compile Include="scoreSaver.cs" />
-    <Compile Include="SidesCommentator.cs" />
+    <Compile Include="BallFinder.cs" />
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
