@@ -9,8 +9,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Net.Http;
 
-using System.Net;
-using System.IO;
 
 namespace Foosball
 {
