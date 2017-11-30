@@ -2,8 +2,8 @@
 {
     class Player
     {
-        public string name { get; set; }
-        public string lastname { get; set; }
-        public int rank { get; set; }
+        public string Name { get; set; }
+        public string Lastname { get; set; }
+        public int Rank { get; set; }
    }
 }

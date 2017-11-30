@@ -2,11 +2,7 @@
 namespace Foosball
 {
     class BallFinder
-    {   
-        public string WhichSide(int x)
-        {
-            return x>289? "Ball is in the blue team area" : "Ball is in the red team area";
-        }
+    {
         public int commentArea(int x)
         {
             if (x < 50) return 0;
@@ -22,5 +18,4 @@ namespace Foosball
         }
         
     }
-
 }

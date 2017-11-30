@@ -48,9 +48,6 @@ namespace Foosball
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            scoR(0);
-            scoB(0);
-
             try
             {
                 OpenFileDialog ofd = new OpenFileDialog();
@@ -87,7 +84,7 @@ namespace Foosball
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
 
-/*<<<<<<< HEAD
+<<<<<<< HEAD
             Console.WriteLine("Setting up listener");
             listener.Prefixes.Add("http://localhost:50438/api/foosballs/");
             listener.Start();
@@ -110,13 +107,13 @@ namespace Foosball
                 var response = httpWebRequest.GetResponse() as HttpWebResponse;
 =======
             HttpPut put = new HttpPut();
->>>>>>> 573a5970db4edb18b4a3558d3960aafe436cd9b5*/
+>>>>>>> 573a5970db4edb18b4a3558d3960aafe436cd9b5
 
-            var redCounter = new redScoreCounter();
-            var blueCounter = new blueScoreCounter();
+            var redCounter = new RedScoreCounter();
+            var blueCounter = new BlueScoreCounter();
             
-            var redTeam = new scoreSaver(redCounter);
-            var blueTeam = new scoreSaver(blueCounter);
+            var redTeam = new ScoreSaver(redCounter);
+            var blueTeam = new ScoreSaver(blueCounter);
             var Coords = new Coordinates(0, 0, 0);
             bool isNew;
 
@@ -133,17 +130,17 @@ namespace Foosball
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
 
-            player1.Value.name = "Jonas";
-            player1.Value.lastname = "Jonaitis";
+            player1.Value.Name = "Jonas";
+            player1.Value.Lastname = "Jonaitis";
 
-            player2.Value.name = "Petras";
-            player2.Value.lastname = "Petraitis";
+            player2.Value.Name = "Petras";
+            player2.Value.Lastname = "Petraitis";
 
-            /*if (zero == false)
+            if (zero == false)
             {
                 put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
                 zero = true;
-            }*/
+            }
 
             foreach (CircleF circle in circles)
             {
@@ -166,13 +163,13 @@ namespace Foosball
                     if (scoreR < redTeam.getGoalCount())
                     {
                         scoreR = redTeam.getGoalCount();
-                        //put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
+                        put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
                     }
                     blueTeam.count(Coords.X, Coords.Y);
                     if (scoreB < blueTeam.getGoalCount())
                     {
                         scoreB = blueTeam.getGoalCount();
-                        //put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
+                        put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
                     }
 
                     setGoalRed(scoreR);
@@ -189,7 +186,7 @@ namespace Foosball
 
                     txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) +
                         "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
-                        ballFinder.WhichSide(Coords.X).PadLeft(75) + Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew).PadLeft(75) + Ball.TimeCommentator(isNew).PadLeft(25));
+                        Ball.WhichSide(Coords.X, isNew).PadLeft(75) + Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew).PadLeft(75) + Ball.TimeCommentator(isNew).PadLeft(25));
                     txtXYRadius.ScrollToCaret();
 
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius,
@@ -237,8 +234,7 @@ namespace Foosball
         private void setWin(int red, int blue)
         {
             string msg = "wins";
-            string bl = "Blue Team";
-            string re = "Red Team";
+
             EventClass eClass1 = new EventClass();
             eClass1.MyEvent += new EventClass.MyDelegate(eClass1_MyEvent);
 
@@ -246,29 +242,28 @@ namespace Foosball
             {
                 msg = "Red";
                 eClass1.RaiseEvent(msg);
-                label2.Text = bl;
+                label2.Text = HardcodedConstants.bl;
             }
             else if (blue > red)
             {
                 msg = "Blue";
                 eClass1.RaiseEvent(msg);
-                label1.Text = re;
+                label1.Text = HardcodedConstants.re;
             }
             else
             {
-                label1.Text = re;
-                label2.Text = bl;
+                label1.Text = HardcodedConstants.re;
+                label2.Text = HardcodedConstants.bl;
             }
         }
 
         public void eClass1_MyEvent(string message)
         {
-            string msg = " Team Wins";
             if (message == "Red")
             {
-                label1.Text = message + msg;
+                label1.Text = message + HardcodedConstants.msg;
             }
-            else { label2.Text = message + msg; }
+            else { label2.Text = message + HardcodedConstants.msg; }
         }
     }
 }

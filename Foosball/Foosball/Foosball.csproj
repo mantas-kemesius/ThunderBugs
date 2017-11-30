@@ -60,9 +60,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="blueScoreCounter.cs" />
+    <Compile Include="BlueScoreCounter.cs" />
     <Compile Include="BallLocationChanges.cs" />
     <Compile Include="Foosball.cs" />
+    <Compile Include="HardcodedConstants.cs" />
     <Compile Include="HttpPut.cs" />
     <Compile Include="IScore.cs" />
     <Compile Include="Player.cs" />
@@ -74,11 +75,11 @@
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="isBetween.cs" />
+    <Compile Include="IsBetween.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="redScoreCounter.cs" />
-    <Compile Include="scoreSaver.cs" />
+    <Compile Include="RedScoreCounter.cs" />
+    <Compile Include="ScoreSaver.cs" />
     <Compile Include="BallFinder.cs" />
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>

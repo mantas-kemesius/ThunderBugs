@@ -30,5 +30,11 @@ namespace Foosball
             if (changed) return "(" + DateTime.Now.ToString() + ")";
             else return "";
         }
+        public string WhichSide(int x, bool diffside)
+        {
+            if (diffside) return x > 289 ? HardcodedConstants.blue : HardcodedConstants.red;
+            else return "";
+        }
+
     }
 }
