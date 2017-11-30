@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Foosball
@@ -24,7 +26,14 @@ namespace Foosball
 
         public string LocationCommentator (int DictKey, bool changed)
         {
+
             if (changed) return BallLocation[DictKey];
+            else return "";
+        }
+
+        public string TimeCommentator (bool changed)
+        {            
+            if (changed) return "(" + DateTime.Now.ToString() + ")";
             else return "";
         }
 

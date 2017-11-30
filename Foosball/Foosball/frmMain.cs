@@ -7,8 +7,6 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;        
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Media;
-using System.IO;
 
 namespace Foosball
 {
@@ -30,7 +28,9 @@ namespace Foosball
         bool blnCapturingInProcess = false;
         private OpenFileDialog _ofd = null;
         static int scoreR = 0;
-        static int scoreB = 0;       
+        static int scoreB = 0;
+        private int checking=0;
+        private Timer sw = new Timer();
         public frmMain()
         {
             InitializeComponent();
@@ -60,13 +60,6 @@ namespace Foosball
             }
             Application.Idle += processFrameAndUpdateGUI;
             blnCapturingInProcess = true;
-
-            /*if (_ofd == null)
-            {
-                _ofd = new OpenFileDialog();
-                _ofd.Filter = "CSV file |*.csv";
-                _ofd.ShowDialog();
-            }*/
         }
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
@@ -75,6 +68,7 @@ namespace Foosball
             var blueTeam = new Score();
             var Coords = new Coordinates(0, 0, 0);
             //var file = new DataAnalysis();
+            bool isNew;
 
             Mat imgOriginal;
             imgOriginal = capWebcam.QueryFrame();
@@ -96,6 +90,12 @@ namespace Foosball
                 Coords.X = (int)circle.Center.X;
                 Coords.Y = (int)circle.Center.Y;
                 Coords.R = (float)circle.Radius;
+
+                if (checking == Coords.X)
+                {
+                    isNew = true;
+                }
+                else isNew = false;                
 
                 Regex regex = new Regex("95|23|387|385|239|267|93|503|97|273|237|25|21");
                 Match match = regex.Match(Coords.X.ToString());
@@ -124,28 +124,25 @@ namespace Foosball
                     }
 
                     SidesCommentator commSides = new SidesCommentator();
-                    commSides.commentArea(Coords.X);
+                    BallLocationChanges Ball = new BallLocationChanges();
 
                     txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) + 
                         "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
-                        commSides.WhichSide(Coords.X).PadLeft(100) + commSides.Ball.LocationCommentator.PadLeft(75));
+                        commSides.WhichSide(Coords.X).PadLeft(75) + Ball.LocationCommentator(commSides.commentArea(Coords.X), isNew).PadLeft(75) +Ball.TimeCommentator(isNew).PadLeft(25));
                     txtXYRadius.ScrollToCaret();
-
-                    commSides.SetCmp(Coords.X);
 
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius, 
                         new MCvScalar((double)BGRcolours.B5, (double)BGRcolours.G5, (double)BGRcolours.R5), 2, LineType.AntiAlias);
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3,
                         new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
-
-                    //file.Ofd = _ofd.FileName;
-                   // file.WriteToCsv(Coords.X.ToString().PadLeft(4), Coords.Y.ToString().PadLeft(4));
+                   
                 }
+
+                checking = Coords.X;
             }
 
             ibOriginal.Image = imgOriginal;
             ibThresh.Image = imgThresh;
-
         }
 
         private void btnPauseOrResume_Click(object sender, EventArgs e)
