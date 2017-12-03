@@ -1,10 +1,10 @@
 ﻿namespace Foosball
 {
-    class BlueScoreCounter : IScore
+    class blueScoreCounter : IScore
     {
         public int Goal(int y, int x)
         {
-            if (x.Between(420, 413) && y.Between(135, 85))
+            if (x <= 413 && x >= 420 && y <= 85 && y >= 135)
             {
                 return 1;
             }
