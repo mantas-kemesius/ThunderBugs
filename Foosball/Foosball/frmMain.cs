@@ -9,8 +9,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Net.Http;
 
-using System.Net;
-using System.IO;
 
 namespace Foosball
 {
@@ -34,6 +32,8 @@ namespace Foosball
         public delegate void Value(int value);
         static int scoreR=0;
         static int scoreB=0;
+        private int checking = 0;
+        private Timer sw = new Timer();
         public frmMain()
         {
             InitializeComponent();
@@ -48,9 +48,6 @@ namespace Foosball
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            scoR(0);
-            scoB(0);
-
             try
             {
                 OpenFileDialog ofd = new OpenFileDialog();
@@ -87,14 +84,38 @@ namespace Foosball
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
 
-            HttpPut put = new HttpPut();
+<<<<<<< HEAD
+            Console.WriteLine("Setting up listener");
+            listener.Prefixes.Add("http://localhost:50438/api/foosballs/");
+            listener.Start();
+            if (listener.IsListening)
+            {
+                Console.WriteLine("HTTP listener set up");
+            }
+            else Console.WriteLine("Failed to set up HTTP listener");
 
-            var redCounter = new redScoreCounter();
-            var blueCounter = new blueScoreCounter();
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(frmMain.url);
+                httpWebRequest.ContentType = "application/json";
+                httpWebRequest.Method = "POST";
+                Foosball output = new Foosball(1,2);
+                string jsonOut = JsonConvert.SerializeObject(output);
+                httpWebRequest.ContentLength = jsonOut.Length;
+                using (var writer = new StreamWriter(httpWebRequest.GetRequestStream()))
+                {
+                    writer.Write(jsonOut);
+                }
+                var response = httpWebRequest.GetResponse() as HttpWebResponse;
+=======
+            HttpPut put = new HttpPut();
+>>>>>>> 573a5970db4edb18b4a3558d3960aafe436cd9b5
+
+            var redCounter = new RedScoreCounter();
+            var blueCounter = new BlueScoreCounter();
             
-            var redTeam = new scoreSaver(redCounter);
-            var blueTeam = new scoreSaver(blueCounter);
+            var redTeam = new ScoreSaver(redCounter);
+            var blueTeam = new ScoreSaver(blueCounter);
             var Coords = new Coordinates(0, 0, 0);
+            bool isNew;
 
             Mat imgOriginal;
             imgOriginal = capWebcam.QueryFrame();
@@ -109,11 +130,11 @@ namespace Foosball
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
 
-            player1.Value.name = "Jonas";
-            player1.Value.lastname = "Jonaitis";
+            player1.Value.Name = "Jonas";
+            player1.Value.Lastname = "Jonaitis";
 
-            player2.Value.name = "Petras";
-            player2.Value.lastname = "Petraitis";
+            player2.Value.Name = "Petras";
+            player2.Value.Lastname = "Petraitis";
 
             if (zero == false)
             {
@@ -126,6 +147,12 @@ namespace Foosball
                 Coords.X = (int)circle.Center.X;
                 Coords.Y = (int)circle.Center.Y;
                 Coords.R = (float)circle.Radius;
+
+                if (checking == Coords.X)
+                {
+                    isNew = true;
+                }
+                else isNew = false;
 
                 Regex regex = new Regex("95|23|387|385|239|267|93|503|97|273|237|25|21");
                 Match match = regex.Match(Coords.X.ToString());
@@ -154,11 +181,12 @@ namespace Foosball
                         txtXYRadius.AppendText(Environment.NewLine);
                     }
 
-                    SidesCommentator commSides = new SidesCommentator();
+                    BallFinder ballFinder = new BallFinder();
+                    BallLocationChanges Ball = new BallLocationChanges();
 
                     txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) +
                         "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
-                        commSides.WhichSide(Coords.X).PadLeft(100) + commSides.commentArea(Coords.X).PadLeft(75));
+                        Ball.WhichSide(Coords.X, isNew).PadLeft(75) + Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew).PadLeft(75) + Ball.TimeCommentator(isNew).PadLeft(25));
                     txtXYRadius.ScrollToCaret();
 
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius,
@@ -167,7 +195,7 @@ namespace Foosball
                         new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
                 }
             }
-
+            checking = Coords.X;
             ibOriginal.Image = imgOriginal;
             ibThresh.Image = imgThresh;
 
@@ -206,8 +234,7 @@ namespace Foosball
         private void setWin(int red, int blue)
         {
             string msg = "wins";
-            string bl = "Blue Team";
-            string re = "Red Team";
+
             EventClass eClass1 = new EventClass();
             eClass1.MyEvent += new EventClass.MyDelegate(eClass1_MyEvent);
 
@@ -215,29 +242,28 @@ namespace Foosball
             {
                 msg = "Red";
                 eClass1.RaiseEvent(msg);
-                label2.Text = bl;
+                label2.Text = HardcodedConstants.bl;
             }
             else if (blue > red)
             {
                 msg = "Blue";
                 eClass1.RaiseEvent(msg);
-                label1.Text = re;
+                label1.Text = HardcodedConstants.re;
             }
             else
             {
-                label1.Text = re;
-                label2.Text = bl;
+                label1.Text = HardcodedConstants.re;
+                label2.Text = HardcodedConstants.bl;
             }
         }
 
         public void eClass1_MyEvent(string message)
         {
-            string msg = " Team Wins";
             if (message == "Red")
             {
-                label1.Text = message + msg;
+                label1.Text = message + HardcodedConstants.msg;
             }
-            else { label2.Text = message + msg; }
+            else { label2.Text = message + HardcodedConstants.msg; }
         }
     }
 }
