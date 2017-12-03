@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2008
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultTransferApi", "ResultTransferApi\ResultTransferApi.csproj", "{58C10CA0-7EF8-42C9-ADA5-F9FB566E3A1A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58C10CA0-7EF8-42C9-ADA5-F9FB566E3A1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58C10CA0-7EF8-42C9-ADA5-F9FB566E3A1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58C10CA0-7EF8-42C9-ADA5-F9FB566E3A1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58C10CA0-7EF8-42C9-ADA5-F9FB566E3A1A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C294E976-3B55-4751-930F-6B66708E5E9F}
+	EndGlobalSection
+EndGlobal
