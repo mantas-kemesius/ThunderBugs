@@ -48,6 +48,13 @@ namespace Foosball
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+            frmNames names = new frmNames();
+            if (names.ShowDialog() == DialogResult.OK)
+            {
+                label1.Text = names.Team1;
+                label2.Text = names.Team2;
+            }
+
             try
             {
                 OpenFileDialog ofd = new OpenFileDialog();
@@ -107,11 +114,8 @@ namespace Foosball
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
 
-            player1.Value.Name = "Jonas";
-            player1.Value.Lastname = "Jonaitis";
-
-            player2.Value.Name = "Petras";
-            player2.Value.Lastname = "Petraitis";
+            player1.Value.Name = label1.Text;
+            player2.Value.Name = label2.Text;
 
             if (zero == false)
             {
@@ -151,7 +155,6 @@ namespace Foosball
 
                     setGoalRed(scoreR);
                     setGoalBlue(scoreB);
-                    setWin(scoreR, scoreB);
 
                     if (txtXYRadius.Text != "")
                     {
@@ -207,40 +210,6 @@ namespace Foosball
         private void setGoalBlue(int blue)
         {
             label4.Text = blue.ToString();
-        }
-        private void setWin(int red, int blue)
-        {
-            string msg = "wins";
-
-            EventClass eClass1 = new EventClass();
-            eClass1.MyEvent += new EventClass.MyDelegate(eClass1_MyEvent);
-
-            if (red > blue)
-            {
-                msg = "Red";
-                eClass1.RaiseEvent(msg);
-                label2.Text = HardcodedConstants.bl;
-            }
-            else if (blue > red)
-            {
-                msg = "Blue";
-                eClass1.RaiseEvent(msg);
-                label1.Text = HardcodedConstants.re;
-            }
-            else
-            {
-                label1.Text = HardcodedConstants.re;
-                label2.Text = HardcodedConstants.bl;
-            }
-        }
-
-        public void eClass1_MyEvent(string message)
-        {
-            if (message == "Red")
-            {
-                label1.Text = message + HardcodedConstants.msg;
-            }
-            else { label2.Text = message + HardcodedConstants.msg; }
         }
     }
 }
