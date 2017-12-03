@@ -84,30 +84,7 @@ namespace Foosball
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
 
-<<<<<<< HEAD
-            Console.WriteLine("Setting up listener");
-            listener.Prefixes.Add("http://localhost:50438/api/foosballs/");
-            listener.Start();
-            if (listener.IsListening)
-            {
-                Console.WriteLine("HTTP listener set up");
-            }
-            else Console.WriteLine("Failed to set up HTTP listener");
-
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(frmMain.url);
-                httpWebRequest.ContentType = "application/json";
-                httpWebRequest.Method = "POST";
-                Foosball output = new Foosball(1,2);
-                string jsonOut = JsonConvert.SerializeObject(output);
-                httpWebRequest.ContentLength = jsonOut.Length;
-                using (var writer = new StreamWriter(httpWebRequest.GetRequestStream()))
-                {
-                    writer.Write(jsonOut);
-                }
-                var response = httpWebRequest.GetResponse() as HttpWebResponse;
-=======
             HttpPut put = new HttpPut();
->>>>>>> 573a5970db4edb18b4a3558d3960aafe436cd9b5
 
             var redCounter = new RedScoreCounter();
             var blueCounter = new BlueScoreCounter();
@@ -138,7 +115,7 @@ namespace Foosball
 
             if (zero == false)
             {
-                put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
+                put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                 zero = true;
             }
 
@@ -163,13 +140,13 @@ namespace Foosball
                     if (scoreR < redTeam.getGoalCount())
                     {
                         scoreR = redTeam.getGoalCount();
-                        put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
+                        put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                     }
                     blueTeam.count(Coords.X, Coords.Y);
                     if (scoreB < blueTeam.getGoalCount())
                     {
                         scoreB = blueTeam.getGoalCount();
-                        put.Put(player1.Value.name, scoreR, player2.Value.name, scoreB);
+                        put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                     }
 
                     setGoalRed(scoreR);
