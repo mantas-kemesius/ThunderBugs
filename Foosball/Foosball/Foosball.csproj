@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="BlueScoreCounter.cs" />
     <Compile Include="BallLocationChanges.cs" />
+    <Compile Include="PlayByPlay.cs" />
     <Compile Include="Foosball.cs" />
     <Compile Include="frmNames.cs">
       <SubType>Form</SubType>
