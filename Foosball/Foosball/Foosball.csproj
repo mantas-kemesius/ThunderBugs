@@ -69,6 +69,10 @@
   <ItemGroup>
     <Compile Include="BlueScoreCounter.cs" />
     <Compile Include="BallLocationChanges.cs" />
+    <Compile Include="DBGameContext.cs" />
+    <Compile Include="DBgoals.cs" />
+    <Compile Include="DBmanRodComm.cs" />
+    <Compile Include="DBplayer.cs" />
     <Compile Include="PlayByPlay.cs" />
     <Compile Include="Foosball.cs" />
     <Compile Include="frmNames.cs">
@@ -122,7 +126,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="concrt140.dll">

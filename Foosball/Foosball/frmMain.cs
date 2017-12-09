@@ -8,6 +8,7 @@ using Emgu.CV.Structure;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Data.Entity;
 
 
 namespace Foosball
@@ -35,18 +36,15 @@ namespace Foosball
         private string sides;
         private Timer sw = new Timer();
         frmNames names = new frmNames();
+        Value scoR = delegate (int val) {scoreR = val;};
+        Value scoB = val => scoreB = val;
+
         public frmMain()
         {
             InitializeComponent();
             this.WindowState = FormWindowState.Maximized;
             this.FormBorderStyle = FormBorderStyle.Sizable;
         }
-        Value scoR = delegate (int val)
-        {
-            scoreR = val;
-        };
-        Value scoB = val => scoreB = val;
-
         private void frmMain_Load(object sender, EventArgs e)
         { 
             if (names.ShowDialog() == DialogResult.OK)
@@ -82,9 +80,9 @@ namespace Foosball
             blnCapturingInProcess = true;
         }
 
-        public static readonly HttpClient client = new HttpClient();
+        /*public static readonly HttpClient client = new HttpClient();
         public static string url = "http://localhost:5000/api/scores/";
-        bool zero = false;
+        bool zero = false;*/
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
@@ -96,40 +94,49 @@ namespace Foosball
             PlayByPlay playByPlay = new PlayByPlay();
 
             HttpPut put = new HttpPut();
+            Mat imgOriginal;
 
             var redCounter = new RedScoreCounter();
-            var blueCounter = new BlueScoreCounter();
-            
+            var blueCounter = new BlueScoreCounter();  
             var redTeam = new ScoreSaver(redCounter);
             var blueTeam = new ScoreSaver(blueCounter);
             var Coords = new Coordinates(0, 0, 0);
             bool isNew;
             bool diffSide = true;
-
-            Mat imgOriginal;
             imgOriginal = capWebcam.QueryFrame();
 
-            if (imgOriginal == null)
+            using (var db = new DBGameContext())
             {
-                MessageBox.Show("End of video capture reached, exiting program.");
-                Environment.Exit(0);
+                var redTeamPlayer = new DBplayer() { PlayerName = names.Team1 };
+                var blueTeamPlayer = new DBplayer() { PlayerName = names.Team2 };
+
+                db.DBplayers.Add(redTeamPlayer);
+                db.DBplayers.Add(blueTeamPlayer);
+                db.SaveChanges();
             }
 
-            Mat imgThresh = await Task.Run(() => Recognition.FindingBall(imgOriginal));
+            if (imgOriginal == null)
+                {
+                    MessageBox.Show("End of video capture reached, exiting program.");
+                    Environment.Exit(0);
+                }
 
+            Mat imgThresh = await Task.Run(() => Recognition.FindingBall(imgOriginal));
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
 
             player1.Value.Name = label1.Text;
             player2.Value.Name = label2.Text;
 
-            if (zero == false)
+            /*if (zero == false)
             {
                 put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                 zero = true;
-            }
+            }*/
 
             foreach (CircleF circle in circles)
             {
+                Regex regex = new Regex("95|23|387|385|239|267|93|503|97|273|237|25|21");
+                Match match = regex.Match(Coords.X.ToString());
                 Coords.X = (int)circle.Center.X;
                 Coords.Y = (int)circle.Center.Y;
                 Coords.R = (float)circle.Radius;
@@ -146,9 +153,6 @@ namespace Foosball
                 }
                 else diffSide = true;
 
-                Regex regex = new Regex("95|23|387|385|239|267|93|503|97|273|237|25|21");
-                Match match = regex.Match(Coords.X.ToString());
-
                 if (!match.Success)
                 {
                     redTeam.count(Coords.X, Coords.Y);
@@ -156,14 +160,14 @@ namespace Foosball
                     {
                         scoreR = redTeam.getGoalCount();
                         Console.WriteLine("Goal was scored by "+ playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
-                        put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
+                       // put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                     }
                     blueTeam.count(Coords.X, Coords.Y);
                     if (scoreB < blueTeam.getGoalCount())
                     {
                         scoreB = blueTeam.getGoalCount();
                         Console.WriteLine("Goal was scored by " + playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
-                        put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
+                       // put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                     }
 
                     setGoalRed(scoreR);
