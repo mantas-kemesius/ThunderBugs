@@ -11,14 +11,14 @@ namespace Foosball
         BallFinder ballFinder = new BallFinder();
         private Dictionary<int, string> RodNames = new Dictionary<int, string>()
         {
-            {1, "Pasaka"},
-            {2, "Gyveno"},
-            {3, "Karta"},
-            {4, "Senele"},
-            {5, "Ir"},
-            {6, "Senelis"},
-            {7, "Su"},
-            {8, "Drakonu"},
+            {1, "Dean"},
+            {2, "Charles"},
+            {3, "John Snow"},
+            {4, "Sam"},
+            {5, "Homer"},
+            {6, "Bart"},
+            {7, "Abraham"},
+            {8, "Dylan"},
             {-1, "Man rod was not detected"}
         };
         public string WhichRod (int x, string team1, string team2)

@@ -82,9 +82,9 @@ namespace Foosball
             blnCapturingInProcess = true;
         }
 
-       /* public static readonly HttpClient client = new HttpClient();
+        public static readonly HttpClient client = new HttpClient();
         public static string url = "http://localhost:5000/api/scores/";
-        bool zero = false;*/
+        bool zero = false;
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
@@ -122,11 +122,11 @@ namespace Foosball
             player1.Value.Name = label1.Text;
             player2.Value.Name = label2.Text;
 
-            /*if (zero == false)
+            if (zero == false)
             {
                 put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                 zero = true;
-            }*/
+            }
 
             foreach (CircleF circle in circles)
             {
@@ -156,14 +156,14 @@ namespace Foosball
                     {
                         scoreR = redTeam.getGoalCount();
                         Console.WriteLine("Goal was scored by "+ playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
-                        //put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
+                        put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                     }
                     blueTeam.count(Coords.X, Coords.Y);
                     if (scoreB < blueTeam.getGoalCount())
                     {
                         scoreB = blueTeam.getGoalCount();
                         Console.WriteLine("Goal was scored by " + playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
-                        //put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
+                        put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                     }
 
                     setGoalRed(scoreR);
