@@ -230,8 +230,9 @@ namespace Foosball
         public void PlayGoalSound()
         {
             string goalsound_filename = "GoalSoundFile.wav";
-            string goalsound_path = Path.Combine(Environment.CurrentDirectory, @"Data\", goalsound_filename);
-            using (var soundPlayer = new SoundPlayer(goalsound_path))
+            var projectFolder = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+            var file = Path.Combine(projectFolder, goalsound_filename);
+            using (var soundPlayer = new SoundPlayer(file))
             {
                 soundPlayer.Play();
             }
