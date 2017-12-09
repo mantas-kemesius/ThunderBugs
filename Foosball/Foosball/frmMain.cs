@@ -8,7 +8,8 @@ using Emgu.CV.Structure;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Net.Http;
-
+using System.IO;
+using System.Media;
 
 namespace Foosball
 {
@@ -154,6 +155,7 @@ namespace Foosball
                     redTeam.count(Coords.X, Coords.Y);
                     if (scoreR < redTeam.getGoalCount())
                     {
+                        PlayGoalSound();
                         scoreR = redTeam.getGoalCount();
                         Console.WriteLine("Goal was scored by "+ playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
                         put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
@@ -161,6 +163,7 @@ namespace Foosball
                     blueTeam.count(Coords.X, Coords.Y);
                     if (scoreB < blueTeam.getGoalCount())
                     {
+                        PlayGoalSound();
                         scoreB = blueTeam.getGoalCount();
                         Console.WriteLine("Goal was scored by " + playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
                         put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
@@ -222,6 +225,17 @@ namespace Foosball
         private void setGoalBlue(int blue)
         {
             label4.Text = blue.ToString();
+        }
+
+        public void PlayGoalSound()
+        {
+            string goalsound_filename = "GoalSoundFile.wav";
+            var projectFolder = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+            var file = Path.Combine(projectFolder, goalsound_filename);
+            using (var soundPlayer = new SoundPlayer(file))
+            {
+                soundPlayer.Play();
+            }
         }
     }
 }
