@@ -22,7 +22,7 @@ namespace Foosball
         {
 
             if (changed) return BallLocation[DictKey];
-            else return "";
+            else return ""; //pabandyt returnint null?
         }
 
         public string TimeCommentator(bool changed)

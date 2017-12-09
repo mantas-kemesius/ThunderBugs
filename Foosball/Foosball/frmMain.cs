@@ -28,12 +28,13 @@ namespace Foosball
     {
         VideoCapture capWebcam;
         bool blnCapturingInProcess = false;
-        private OpenFileDialog _ofd = null;
         public delegate void Value(int value);
-        static int scoreR=0;
-        static int scoreB=0;
+        static int scoreR = 0;
+        static int scoreB = 0;
         private int checking = 0;
+        private string sides;
         private Timer sw = new Timer();
+        frmNames names = new frmNames();
         public frmMain()
         {
             InitializeComponent();
@@ -47,8 +48,7 @@ namespace Foosball
         Value scoB = val => scoreB = val;
 
         private void frmMain_Load(object sender, EventArgs e)
-        {
-            frmNames names = new frmNames();
+        { 
             if (names.ShowDialog() == DialogResult.OK)
             {
                 label1.Text = names.Team1;
@@ -91,6 +91,10 @@ namespace Foosball
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
 
+            BallLocationChanges Ball = new BallLocationChanges();
+            BallFinder ballFinder = new BallFinder();
+            PlayByPlay playByPlay = new PlayByPlay();
+
             HttpPut put = new HttpPut();
 
             var redCounter = new RedScoreCounter();
@@ -100,6 +104,7 @@ namespace Foosball
             var blueTeam = new ScoreSaver(blueCounter);
             var Coords = new Coordinates(0, 0, 0);
             bool isNew;
+            bool diffSide = true;
 
             Mat imgOriginal;
             imgOriginal = capWebcam.QueryFrame();
@@ -135,6 +140,12 @@ namespace Foosball
                 }
                 else isNew = false;
 
+                if (sides == Ball.WhichSide(Coords.X, diffSide))
+                {
+                    diffSide = false;
+                }
+                else diffSide = true;
+
                 Regex regex = new Regex("95|23|387|385|239|267|93|503|97|273|237|25|21");
                 Match match = regex.Match(Coords.X.ToString());
 
@@ -144,12 +155,14 @@ namespace Foosball
                     if (scoreR < redTeam.getGoalCount())
                     {
                         scoreR = redTeam.getGoalCount();
+                        Console.WriteLine("Goal was scored by "+ playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
                         put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                     }
                     blueTeam.count(Coords.X, Coords.Y);
                     if (scoreB < blueTeam.getGoalCount())
                     {
                         scoreB = blueTeam.getGoalCount();
+                        Console.WriteLine("Goal was scored by " + playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
                         put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                     }
 
@@ -161,12 +174,9 @@ namespace Foosball
                         txtXYRadius.AppendText(Environment.NewLine);
                     }
 
-                    BallFinder ballFinder = new BallFinder();
-                    BallLocationChanges Ball = new BallLocationChanges();
-
                     txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) +
                         "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
-                        Ball.WhichSide(Coords.X, isNew).PadLeft(75) + Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew).PadLeft(75) + Ball.TimeCommentator(isNew).PadLeft(25));
+                        Ball.WhichSide(Coords.X, diffSide).PadLeft(75) + Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew).PadLeft(75) + Ball.TimeCommentator(isNew).PadLeft(25));
                     txtXYRadius.ScrollToCaret();
 
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius,
@@ -175,6 +185,8 @@ namespace Foosball
                         new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
                 }
             }
+            
+            sides = Ball.WhichSide(Coords.X, diffSide);
             checking = Coords.X;
             ibOriginal.Image = imgOriginal;
             ibThresh.Image = imgThresh;
