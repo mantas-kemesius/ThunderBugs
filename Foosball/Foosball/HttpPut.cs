@@ -23,7 +23,7 @@ namespace Foosball
         }
 
         public void Put(string redTeam, int redTeamScore, string blueTeam, int blueTeamScore)
-        {/*
+        {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(frmMain.url);
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
@@ -35,6 +35,6 @@ namespace Foosball
                 writer.Write(jsonOut);
             }
             var response = httpWebRequest.GetResponse() as HttpWebResponse;
-        */}
+        }
     }
 }
