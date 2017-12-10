@@ -61,6 +61,18 @@ namespace Foosball
                 label1.Text = names.Team1;
                 label2.Text = names.Team2;
             }
+            
+            using (var db = new DBFoosball())
+            {
+                var DBplayer1 = new Player { Name = names.Team1 };
+                var DBplayer2 = new Player { Name = names.Team2 };
+
+
+                db.Player.Add(DBplayer1);
+                db.SaveChanges();
+                db.Player.Add(DBplayer2);
+                db.SaveChanges();
+            }
 
             try
             {
@@ -89,9 +101,9 @@ namespace Foosball
             blnCapturingInProcess = true;
         }
 
-        public static readonly HttpClient client = new HttpClient();
+        /*public static readonly HttpClient client = new HttpClient();
         public static string url = "http://localhost:5000/api/scores/";
-        bool zero = false;
+        bool zero = false;*/
 
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
@@ -112,7 +124,7 @@ namespace Foosball
             var Coords = new Coordinates(0, 0, 0);
             bool isNew;
             bool diffSide = true;
-
+           
             Mat imgOriginal;
             imgOriginal = capWebcam.QueryFrame();
 
@@ -129,11 +141,11 @@ namespace Foosball
             player1.Value.Name = label1.Text;
             player2.Value.Name = label2.Text;
 
-            if (zero == false)
+            /*if (zero == false)
             {
                 put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                 zero = true;
-            }
+            }*/
 
             foreach (CircleF circle in circles)
             {
@@ -163,16 +175,28 @@ namespace Foosball
                     {
                         PlayGoalSound();
                         scoreR = redTeam.getGoalCount();
-                        Console.WriteLine("Goal was scored by "+ playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
-                        put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
+                        Console.WriteLine("Goal was scored by "+ playByPlay.WhichRod(Coords.X));
+                        using (var db = new DBFoosball())
+                        {
+                            var goal = new Goals { RodName = playByPlay.WhichRod(Coords.X), Time = playByPlay.Time()};
+                            db.Goals.Add(goal);
+                            db.SaveChanges();
+                        }
+                        //put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                     }
                     blueTeam.count(Coords.X, Coords.Y);
                     if (scoreB < blueTeam.getGoalCount())
                     {
                         PlayGoalSound();
                         scoreB = blueTeam.getGoalCount();
-                        Console.WriteLine("Goal was scored by " + playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
-                        put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
+                        Console.WriteLine("Goal was scored by " + playByPlay.WhichRod(Coords.X));
+                        using (var db = new DBFoosball())
+                        {
+                            var goal = new Goals { RodName = playByPlay.WhichRod(Coords.X), Time = playByPlay.Time() };
+                            db.Goals.Add(goal);
+                            db.SaveChanges();
+                        }
+                        //put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                     }
 
                     setGoalRed(scoreR);
@@ -210,8 +234,16 @@ namespace Foosball
 
                     txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) +
                         "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
-                        Ball.WhichSide(Coords.X, diffSide).PadLeft(75) + Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew).PadLeft(75) + Ball.TimeCommentator(isNew).PadLeft(25));
+                        Ball.WhichSide(Coords.X, diffSide).PadLeft(75) + Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew).PadLeft(75) + Ball.TimeCommentator(isNew).ToString().PadLeft(25));
                     txtXYRadius.ScrollToCaret();
+
+                    using (var db = new DBFoosball())
+                    {
+                        var gameComm = new GameComm { Comments = Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew), Time = Ball.TimeCommentator(isNew)};
+
+                        db.GameComm.Add(gameComm);
+                        db.SaveChanges();
+                    }
 
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius,
                         new MCvScalar((double)BGRcolours.B5, (double)BGRcolours.G5, (double)BGRcolours.R5), 2, LineType.AntiAlias);

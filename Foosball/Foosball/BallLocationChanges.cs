@@ -5,6 +5,7 @@ namespace Foosball
 {
     class BallLocationChanges
     {
+        
         private Dictionary<int, string> BallLocation = new Dictionary<int, string>()
         {
             {0,"Ball is near the red team gates" },
@@ -25,10 +26,10 @@ namespace Foosball
             else return ""; //pabandyt returnint null?
         }
 
-        public string TimeCommentator(bool changed)
-        {
-            if (changed) return "(" + DateTime.Now.ToString() + ")";
-            else return "";
+        public DateTime TimeCommentator(bool changed)
+        {            
+            if (changed) return DateTime.Now;
+            else return Convert.ToDateTime("");
         }
         public string WhichSide(int x, bool diffside)
         {
