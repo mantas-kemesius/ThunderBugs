@@ -6,14 +6,16 @@ namespace Foosball
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("Player")]
-    public partial class Player
+    [Table("GameComm")]
+    public partial class GameComm
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
-        [Required]
         [StringLength(50)]
-        public string Name { get; set; }
+        public string Comments { get; set; }
+
+        [Column(TypeName = "date")]
+        public DateTime? Time { get; set; }
     }
 }
