@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.IO;
 using System.Media;
+using System.Diagnostics;
 
 namespace Foosball
 {
@@ -32,6 +32,12 @@ namespace Foosball
         public delegate void Value(int value);
         static int scoreR = 0;
         static int scoreB = 0;
+        static int per1;
+        static int per2;
+        static int percent1;
+        static int percent2;
+        Stopwatch stopwatch1 = new Stopwatch();
+        Stopwatch stopwatch2 = new Stopwatch();
         private int checking = 0;
         private string sides;
         private Timer sw = new Timer();
@@ -171,6 +177,31 @@ namespace Foosball
 
                     setGoalRed(scoreR);
                     setGoalBlue(scoreB);
+                    BallFinder Ball1 = new BallFinder();
+                    if (Ball1.commentArea(Coords.X) == -1)
+                    {
+                        stopwatch1.Stop();
+                        stopwatch2.Stop();
+                    }
+                    else if (Ball1.commentArea(Coords.X) > 3)
+                    {
+                        stopwatch2.Start();
+                        stopwatch1.Stop();
+                    }
+                    else if (Ball1.commentArea(Coords.X) < 4)
+                    {
+                        stopwatch1.Start();
+                        stopwatch2.Stop();
+                    }
+
+                    per1 = (int)stopwatch1.Elapsed.TotalSeconds;
+                    per2 = (int)stopwatch2.Elapsed.TotalSeconds;
+
+                    if (per1 > 0 || per2 > 0)
+                    {
+                        percent1 = per1 * 100 / (per1 + per2);//kiek procentu laiko kamuolys buvo raudonuju pusej
+                        percent2 = per2 * 100 / (per1 + per2);//kiek procentu laiko kamuolys buvo melynuju pusej
+                    }
 
                     if (txtXYRadius.Text != "")
                     {
