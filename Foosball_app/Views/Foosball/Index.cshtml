@@ -4,32 +4,36 @@
 <header class="masthead">
     <div class="container">
         <div class="row">
-            <div class="col-md-12" style="margin-top:50px;">
-                <video id="video" width="1200" height="980" autoplay></video>
-                <!--<canvas id="canvas" width="640" height="480"></canvas>-->
+            <div align="center">
+                <div style="margin-top: 100px; margin-left:200px; background-color:black; color:white;">
+                       @{
+                           var redName = ViewData["red"];
+                           var blueName = ViewData["blue"];
+                       }
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <strong align="center">Play by play of <strong style="color:blue;">@blueName</strong> vs <strong style="color:red;">@redName</strong></strong>
+                                    <td><strong style="color:red;">Red team control</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong style="color:blue;">Blue team control</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Comment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date</strong></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @{
+                                int i = 0;
+                                int j = 0;
+                            }
+                                @model List<string>
+                                @foreach (var element in Model)
+                                {
+                                    <tr>
+                                            <td>@Html.DisplayFor(m => element)</td>
+                                    </tr>     
+                                }
+</tbody>
+
+                        </table>
+                    </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
 </header>
-<script>
-    // Grab elements, create settings, etc.
-    var video = document.getElementById('video');
-
-    // Get access to the camera!
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        // Not adding `{ audio: true }` since we only want video now
-        navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
-            video.src = window.URL.createObjectURL(stream);
-            video.play();
-        });
-    }
-
-    // Elements for taking the snapshot
-    var context = canvas.getContext('2d');
-    var video = document.getElementById('video');
-
-    // Trigger photo take
-    document.getElementById("snap").addEventListener("click", function () {
-        context.drawImage(video, 0, 0, 640, 480);
-    });
-</script>

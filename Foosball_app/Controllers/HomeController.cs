@@ -22,7 +22,7 @@ namespace Foosball_app.Controllers
     {
         public ActionResult Index()
         {
-            HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(string.Format("http://localhost:5000/api/scores/"));
+            HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(string.Format("http://localhost:51117/api/scores/"));
 
             WebReq.Method = "GET";
 
