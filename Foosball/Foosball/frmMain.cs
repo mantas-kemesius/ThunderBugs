@@ -11,6 +11,8 @@ using System.IO;
 using System.Media;
 using System.Diagnostics;
 
+using System.Data.SqlClient;
+
 namespace Foosball
 {
     public struct Coordinates
@@ -27,6 +29,8 @@ namespace Foosball
     }
     public partial class frmMain : Form
     {
+
+
         VideoCapture capWebcam;
         bool blnCapturingInProcess = false;
         public delegate void Value(int value);
@@ -90,11 +94,14 @@ namespace Foosball
         }
 
         public static readonly HttpClient client = new HttpClient();
-        public static string url = "http://localhost:5000/api/scores/";
+        public static string url = "http://localhost:51117/api/scores/";
         bool zero = false;
-
         async void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
+            SqlConnection con = new SqlConnection("Data Source=DESKTOP-HH6M4CE;Initial Catalog=Thunderbugs;Integrated Security=True;Pooling=False");
+            con.Open();
+            int gameNr = 1;
+
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
 
@@ -131,6 +138,10 @@ namespace Foosball
 
             if (zero == false)
             {
+                SqlCommand cmd = new SqlCommand("Insert into Scores(redteam_name, blueteam_name, redteam_score, blueteam_score, game_nr) values ('" + player1.Value.Name + "','" + player2.Value.Name + "','"+ scoreR + "','" + scoreB + "','" + gameNr + "')", con);
+                cmd.ExecuteNonQuery();
+                con.Close();
+             
                 put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                 zero = true;
             }
@@ -165,6 +176,11 @@ namespace Foosball
                         scoreR = redTeam.getGoalCount();
                         Console.WriteLine("Goal was scored by "+ playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
                         put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
+                      
+                        SqlCommand cmd2 = new SqlCommand("Insert into Scores(redteam_name, blueteam_name, redteam_score, blueteam_score, game_nr) values ('" + player1.Value.Name + "','" + player2.Value.Name + "','" + scoreR + "','" + scoreB + "','" + gameNr + "')", con);
+                        cmd2.ExecuteNonQuery();
+                   
+                        
                     }
                     blueTeam.count(Coords.X, Coords.Y);
                     if (scoreB < blueTeam.getGoalCount())
@@ -173,6 +189,8 @@ namespace Foosball
                         scoreB = blueTeam.getGoalCount();
                         Console.WriteLine("Goal was scored by " + playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
                         put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
+                        SqlCommand cmd3 = new SqlCommand("Insert into Scores(redteam_name, blueteam_name, redteam_score, blueteam_score, game_nr) values ('" + player1.Value.Name + "','" + player2.Value.Name + "','" + scoreR + "','" + scoreB + "','" + gameNr + "')", con);
+                        cmd3.ExecuteNonQuery();
                     }
 
                     setGoalRed(scoreR);
@@ -207,6 +225,10 @@ namespace Foosball
                     {
                         txtXYRadius.AppendText(Environment.NewLine);
                     }
+                    string comm = Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew).ToString();
+                    string comm2 = Ball.TimeCommentator(isNew).ToString();
+                    SqlCommand cmd4 = new SqlCommand("Insert into Comments(playbyplay, game_nr, redteam_time, blueteam_time, comment) values ('" + comm + "','" + gameNr + "','" + percent1 + "','" + percent2 + "','" + comm2 + "')", con);
+                    cmd4.ExecuteNonQuery();
 
                     txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) +
                         "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
@@ -224,7 +246,7 @@ namespace Foosball
             checking = Coords.X;
             ibOriginal.Image = imgOriginal;
             ibThresh.Image = imgThresh;
-
+            con.Close();
         }
 
         private void btnPauseOrResume_Click(object sender, EventArgs e)
