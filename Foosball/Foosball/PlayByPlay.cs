@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Foosball
 {
@@ -21,16 +18,13 @@ namespace Foosball
             {8, "Dylan"},
             {-1, "Man rod was not detected"}
         };
-        public string WhichRod (int x, string team1, string team2)
+        public string WhichRod (int x)
         {
-            if (ballFinder.commentArea(x) == 1 || ballFinder.commentArea(x) == 2 || ballFinder.commentArea(x) == 4 || ballFinder.commentArea(x) == 6)
-            {
-                return RodNames[ballFinder.commentArea(x)] + " at " + DateTime.Now.ToString()+ " ("+team1 + "team rod";
-            }
-            else
-            {
-                return RodNames[ballFinder.commentArea(x)] + " at " + DateTime.Now.ToString() + " ("+team2 + "team rod)";
-            }
+            return RodNames[ballFinder.commentArea(x)];
+        }
+        public DateTime Time()
+        {
+            return DateTime.Now;
         }
     }
 }

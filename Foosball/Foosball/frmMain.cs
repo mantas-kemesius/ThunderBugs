@@ -10,6 +10,8 @@ using System.Net.Http;
 using System.IO;
 using System.Media;
 using System.Diagnostics;
+using System.Data.Entity.Validation;
+using System.Linq;
 
 namespace Foosball
 {
@@ -62,6 +64,18 @@ namespace Foosball
                 label2.Text = names.Team2;
             }
 
+            using (var db = new DBFoosball())
+            {
+                var DBplayer1 = new Player { Name = names.Team1 };
+                var DBplayer2 = new Player { Name = names.Team2 };
+
+
+                db.Player.Add(DBplayer1);
+                db.SaveChanges();
+                db.Player.Add(DBplayer2);
+                db.SaveChanges();
+            }
+
             try
             {
                 OpenFileDialog ofd = new OpenFileDialog();
@@ -82,18 +96,19 @@ namespace Foosball
                 MessageBox.Show("unable to read from webcam" + Environment.NewLine + 
                                 ex.Message + Environment.NewLine +
                                 "exiting program");
-                Environment.Exit(0);
+
+                this.Close();
                 return;
             }
             Application.Idle += processFrameAndUpdateGUI;
             blnCapturingInProcess = true;
         }
 
-        public static readonly HttpClient client = new HttpClient();
+        /*public static readonly HttpClient client = new HttpClient();
         public static string url = "http://localhost:5000/api/scores/";
-        bool zero = false;
+        bool zero = false;*/
 
-        async void processFrameAndUpdateGUI(object sender, EventArgs arg)
+        void processFrameAndUpdateGUI(object sender, EventArgs arg)
         {
             Lazy < Player > player1 = new Lazy<Player>();
             Lazy < Player > player2 = new Lazy<Player>();
@@ -122,18 +137,18 @@ namespace Foosball
                 Environment.Exit(0);
             }
 
-            Mat imgThresh = await Task.Run(() => Recognition.FindingBall(imgOriginal));
+            Mat imgThresh =  Recognition.FindingBall(imgOriginal);
 
             CircleF[] circles = CvInvoke.HoughCircles(imgThresh, HoughType.Gradient, 2.0, imgThresh.Rows / 4, 60, 30, 5, 10);
 
             player1.Value.Name = label1.Text;
             player2.Value.Name = label2.Text;
 
-            if (zero == false)
+            /*if (zero == false)
             {
                 put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                 zero = true;
-            }
+            }*/
 
             foreach (CircleF circle in circles)
             {
@@ -163,16 +178,30 @@ namespace Foosball
                     {
                         PlayGoalSound();
                         scoreR = redTeam.getGoalCount();
-                        Console.WriteLine("Goal was scored by "+ playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
-                        put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
+                        using (var db = new DBFoosball())
+                        {
+                            var goal = new Goals { RodName = playByPlay.WhichRod(Coords.X), Time = playByPlay.Time() };
+                            db.Goals.Add(goal);
+                            db.SaveChanges();
+
+                            var q = from b in db.Goals select b.RodName;
+                        }
+                        Console.WriteLine("Goal was scored by " + playByPlay.WhichRod(Coords.X));
+                        //put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                     }
                     blueTeam.count(Coords.X, Coords.Y);
                     if (scoreB < blueTeam.getGoalCount())
                     {
                         PlayGoalSound();
                         scoreB = blueTeam.getGoalCount();
-                        Console.WriteLine("Goal was scored by " + playByPlay.WhichRod(Coords.X, names.Team1, names.Team2));
-                        put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
+                        Console.WriteLine("Goal was scored by " + playByPlay.WhichRod(Coords.X));
+                        using (var db = new DBFoosball())
+                        {
+                            var goal = new Goals { RodName = playByPlay.WhichRod(Coords.X), Time = playByPlay.Time() };
+                            db.Goals.Add(goal);
+                            db.SaveChanges();
+                        }
+                        //put.Put(player1.Value.Name, scoreR, player2.Value.Name, scoreB);
                     }
 
                     setGoalRed(scoreR);
@@ -210,16 +239,41 @@ namespace Foosball
 
                     txtXYRadius.AppendText("(" + Coords.X.ToString().PadLeft(4) + " ; " + Coords.Y.ToString().PadLeft(4) +
                         "), radius = " + Coords.R.ToString("###.000").PadLeft(7) +
-                        Ball.WhichSide(Coords.X, diffSide).PadLeft(75) + Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew).PadLeft(75) + Ball.TimeCommentator(isNew).PadLeft(25));
+                        Ball.WhichSide(Coords.X, diffSide).PadLeft(75) + Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew).PadLeft(75) + Ball.TimeCommentator(isNew).ToString().PadLeft(25));
                     txtXYRadius.ScrollToCaret();
 
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), (int)circle.Radius,
                         new MCvScalar((double)BGRcolours.B5, (double)BGRcolours.G5, (double)BGRcolours.R5), 2, LineType.AntiAlias);
                     CvInvoke.Circle(imgOriginal, new Point(Coords.X, Coords.Y), 3,
                         new MCvScalar((double)BGRcolours.B6, (double)BGRcolours.G6, (double)BGRcolours.R6), -1);
+
+                    if (isNew)
+                    {
+                        using (var db = new DBFoosball())
+                        {
+                            var gameComm = new GameComm { Comments = Ball.LocationCommentator(ballFinder.commentArea(Coords.X), isNew), Time = Ball.TimeCommentator(isNew) };
+
+                            try
+                            {
+                                db.GameComm.Add(gameComm);
+                                db.SaveChanges();
+                            }
+                            catch (DbEntityValidationException ex)
+                            {
+                                foreach (var entityValidationErrors in ex.EntityValidationErrors)
+                                {
+                                    foreach (var validationError in entityValidationErrors.ValidationErrors)
+                                    {
+                                        Console.WriteLine("Property: " + validationError.PropertyName + " Error: " + validationError.ErrorMessage);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    
                 }
             }
-            
             sides = Ball.WhichSide(Coords.X, diffSide);
             checking = Coords.X;
             ibOriginal.Image = imgOriginal;
